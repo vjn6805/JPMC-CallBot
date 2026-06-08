@@ -1,0 +1,46 @@
+{
+    "categories": [
+      {
+        "id": "LAPTOP",
+        "label": "Laptop / Hardware Issue",
+        "keywords": ["laptop", "computer", "screen", "keyboard", "mouse", "hardware", "slow", "crash", "frozen"],
+        "sla_hours": 4,
+        "team": "Hardware Support Team"
+      },
+      {
+        "id": "NETWORK",
+        "label": "Network / VPN Issue",
+        "keywords": ["internet", "wifi", "network", "vpn", "connection", "no internet", "disconnected"],
+        "sla_hours": 2,
+        "team": "Network Support Team"
+      },
+      {
+        "id": "ACCESS",
+        "label": "Access / Password Issue",
+        "keywords": ["password", "locked", "access", "login", "cannot login", "account", "reset"],
+        "sla_hours": 1,
+        "team": "Identity & Access Team"
+      },
+      {
+        "id": "SOFTWARE",
+        "label": "Software / Application Issue",
+        "keywords": ["software", "application", "app", "install", "outlook", "teams", "excel", "error", "not opening"],
+        "sla_hours": 6,
+        "team": "Software Support Team"
+      },
+      {
+        "id": "PRINTER",
+        "label": "Printer / Scanner Issue",
+        "keywords": ["printer", "print", "scanner", "scan", "photocopy"],
+        "sla_hours": 8,
+        "team": "Hardware Support Team"
+      },
+      {
+        "id": "OTHER",
+        "label": "Other IT Issue",
+        "keywords": [],
+        "sla_hours": 24,
+        "team": "General IT Support"
+      }
+    ]
+  }
