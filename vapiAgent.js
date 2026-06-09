@@ -16,28 +16,43 @@ async function createITHelpdeskAssistant() {
       messages: [
         {
           role: "system",
-          content: `You are Alex, a friendly IT Helpdesk assistant for JPMC (JPMorgan Chase).
+          content: `You are Alex, a smart and friendly assistant for JPMC employees.
+You help with IT Helpdesk issues AND Meeting Room reservations over a phone call.
 
-CRITICAL RULES — READ CAREFULLY:
-- The caller has already been verified by our system before reaching you
-- You already know who they are — do NOT ask for their name, employee ID, or any personal details
-- Just ask: what is the IT issue they are facing?
-- Raise the ticket immediately after they describe the issue
-- Do not ask more than one follow-up question
+CRITICAL RULES:
+- Caller is already verified — never ask for name or employee ID
+- Keep every response under 3 sentences — this is a phone call
+- Be warm, confident, and efficient
 
-FLOW:
-1. Greet warmly: "Hello! I'm Alex from JPMC IT Helpdesk. How can I help you today?"
-2. Listen to their issue
-3. Immediately call raise_ticket tool with the issue description
-4. Confirm: ticket ID, team assigned, time to resolution
-5. Ask if anything else is needed
-6. End call politely
+FOR IT ISSUES:
+- Ask what the problem is
+- Immediately raise a ticket using raise_ticket
+- Confirm ticket ID and which team will handle it
 
-RULES:
-- Max 2-3 sentences per response — this is a phone call
-- Never ask for name or employee ID — the system handles this automatically
-- If a tool call fails, say: "I have noted your issue. Please call extension 1234 for immediate help."
-- Be confident, warm, and efficient`
+FOR MEETING ROOMS:
+- Ask: how many people, which date, what time
+- Call check_room_availability to find options
+- Suggest the best room and ask for confirmation
+- Only call book_room AFTER the user says yes
+- Always confirm booking ID at the end
+
+FOR CANCELLATIONS:
+- Ask for the booking ID
+- Call cancel_booking to cancel it
+
+FOR LISTING BOOKINGS:
+- Call my_bookings to list their upcoming rooms
+
+HANDLING DATES AND TIMES:
+- Today's date is ${new Date().toISOString().split('T')[0]}
+- If user says "tomorrow", calculate the correct date
+- If user says "3pm", convert to 15:00
+- Always confirm the date and time back to the user before booking
+
+If any tool fails, say:
+"I am having trouble with the system right now. Please visit the facilities desk or call extension 1234."
+
+Never say "there is an issue with the system" — always offer an alternative.`
         }
       ],
 
@@ -115,7 +130,99 @@ RULES:
           server: {
             url: `${SERVER_URL}/helpdesk/my-tickets`
           }
+        },
+        // ── Meeting Room Tools ──
+{
+  type: "function",
+  function: {
+    name: "check_room_availability",
+    description: "Check which meeting rooms are available for a given date, time and number of people",
+    parameters: {
+      type: "object",
+      properties: {
+        date: {
+          type: "string",
+          description: "Date in YYYY-MM-DD format, e.g. 2026-06-10"
+        },
+        start_time: {
+          type: "string",
+          description: "Start time in HH:MM 24hr format, e.g. 14:00 for 2pm"
+        },
+        capacity_needed: {
+          type: "number",
+          description: "Number of people who need to attend"
         }
+      },
+      required: ["date", "start_time", "capacity_needed"]
+    }
+  },
+  server: { url: `${SERVER_URL}/meetingroom/check-availability` }
+},
+{
+  type: "function",
+  function: {
+    name: "book_room",
+    description: "Book a specific meeting room after the user confirms they want it",
+    parameters: {
+      type: "object",
+      properties: {
+        room_name: {
+          type: "string",
+          description: "Name of the room to book, e.g. Aqua, Horizon, Zenith"
+        },
+        date: {
+          type: "string",
+          description: "Date in YYYY-MM-DD format"
+        },
+        start_time: {
+          type: "string",
+          description: "Start time in HH:MM 24hr format"
+        },
+        duration_hours: {
+          type: "number",
+          description: "Duration of the meeting in hours, default is 1"
+        },
+        agenda: {
+          type: "string",
+          description: "Brief agenda or purpose of the meeting"
+        }
+      },
+      required: ["room_name", "date", "start_time"]
+    }
+  },
+  server: { url: `${SERVER_URL}/meetingroom/book-room` }
+},
+{
+  type: "function",
+  function: {
+    name: "cancel_booking",
+    description: "Cancel an existing room booking using the booking ID",
+    parameters: {
+      type: "object",
+      properties: {
+        booking_id: {
+          type: "string",
+          description: "The booking ID like JPMC-RM-2001"
+        }
+      },
+      required: ["booking_id"]
+    }
+  },
+  server: { url: `${SERVER_URL}/meetingroom/cancel-booking` }
+},
+{
+  type: "function",
+  function: {
+    name: "my_bookings",
+    description: "List all upcoming room bookings for the caller",
+    parameters: {
+      type: "object",
+      properties: {},
+      required: []
+    }
+  },
+  server: { url: `${SERVER_URL}/meetingroom/my-bookings` }
+},
       ]
     },
 

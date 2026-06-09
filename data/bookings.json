@@ -1,0 +1,40 @@
+{
+  "bookings": [
+    {
+      "booking_id": "JPMC-RM-2001",
+      "room_id": "RM002",
+      "room_name": "Horizon",
+      "floor": 6,
+      "building": "Tower A",
+      "employee_sid": "EMP001",
+      "employee_name": "Veer Jain",
+      "phone_number": "+917485963139",
+      "date": "2026-06-09",
+      "start_time": "15:00",
+      "end_time": "16:00",
+      "duration_hours": 1,
+      "agenda": "Not specified",
+      "status": "CANCELLED",
+      "booked_at": "2026-06-08T19:27:51.480Z",
+      "cancelled_at": "2026-06-08T19:28:52.232Z"
+    },
+    {
+      "booking_id": "JPMC-RM-2002",
+      "room_id": "RM001",
+      "room_name": "Aqua",
+      "floor": 4,
+      "building": "Tower A",
+      "employee_sid": "EMP001",
+      "employee_name": "Veer Jain",
+      "phone_number": "+917485963139",
+      "date": "2026-06-09",
+      "start_time": "15:00",
+      "end_time": "16:00",
+      "duration_hours": 1,
+      "agenda": "Not specified",
+      "status": "CONFIRMED",
+      "booked_at": "2026-06-09T04:34:09.158Z"
+    }
+  ],
+  "last_booking_id": 2002
+}

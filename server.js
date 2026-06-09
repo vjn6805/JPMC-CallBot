@@ -15,6 +15,9 @@ const employees = require('./employees.json');
 const helpdeskRoutes = require('./routes/helpdesk');
 app.use('/helpdesk', helpdeskRoutes);
 
+const meetingRoomRoutes = require('./routes/meetingroom');
+app.use('/meetingroom', meetingRoomRoutes);
+
 // ─────────────────────────────────────────────
 // ROUTE 1: Twilio incoming call
 // Phase 1 auth + hand off to vAPI
