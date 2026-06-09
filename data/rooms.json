@@ -1,49 +1,124 @@
 {
-    "rooms": [
-      {
-        "room_id": "RM001",
-        "name": "Aqua",
-        "floor": 4,
-        "building": "Tower A",
-        "capacity": 12,
-        "amenities": ["projector", "whiteboard", "video conferencing"],
-        "available": true
-      },
-      {
-        "room_id": "RM002",
-        "name": "Horizon",
-        "floor": 6,
-        "building": "Tower A",
-        "capacity": 8,
-        "amenities": ["projector", "whiteboard"],
-        "available": true
-      },
-      {
-        "room_id": "RM003",
-        "name": "Zenith",
-        "floor": 2,
-        "building": "Tower B",
-        "capacity": 20,
-        "amenities": ["projector", "whiteboard", "video conferencing", "telephone"],
-        "available": true
-      },
-      {
-        "room_id": "RM004",
-        "name": "Spark",
-        "floor": 3,
-        "building": "Tower B",
-        "capacity": 4,
-        "amenities": ["whiteboard", "television"],
-        "available": true
-      },
-      {
-        "room_id": "RM005",
-        "name": "Nova",
-        "floor": 5,
-        "building": "Tower A",
-        "capacity": 15,
-        "amenities": ["projector", "video conferencing", "telephone"],
-        "available": true
-      }
-    ]
-  }
+  "rooms": [
+    {
+      "room_id": "RM001",
+      "name": "Aqua",
+      "type": "meeting",
+      "floor": 4,
+      "building": "Tower A",
+      "capacity": 12,
+      "amenities": ["projector", "whiteboard", "video conferencing"],
+      "available": true
+    },
+    {
+      "room_id": "RM002",
+      "name": "Horizon",
+      "type": "meeting",
+      "floor": 6,
+      "building": "Tower A",
+      "capacity": 8,
+      "amenities": ["projector", "whiteboard"],
+      "available": true
+    },
+    {
+      "room_id": "RM003",
+      "name": "Zenith",
+      "type": "meeting",
+      "floor": 2,
+      "building": "Tower B",
+      "capacity": 20,
+      "amenities": ["projector", "whiteboard", "video conferencing", "telephone"],
+      "available": true
+    },
+    {
+      "room_id": "RM004",
+      "name": "Spark",
+      "type": "meeting",
+      "floor": 3,
+      "building": "Tower B",
+      "capacity": 4,
+      "amenities": ["whiteboard", "television"],
+      "available": true
+    },
+    {
+      "room_id": "RM005",
+      "name": "Nova",
+      "type": "meeting",
+      "floor": 5,
+      "building": "Tower A",
+      "capacity": 15,
+      "amenities": ["projector", "video conferencing", "telephone"],
+      "available": true
+    },
+    {
+      "room_id": "RM006",
+      "name": "Prism",
+      "type": "meeting",
+      "floor": 3,
+      "building": "Tower C",
+      "capacity": 10,
+      "amenities": ["projector", "whiteboard", "video conferencing"],
+      "available": true
+    },
+    {
+      "room_id": "RM007",
+      "name": "Atlas",
+      "type": "meeting",
+      "floor": 5,
+      "building": "Tower C",
+      "capacity": 6,
+      "amenities": ["whiteboard", "television"],
+      "available": true
+    },
+    {
+      "room_id": "FR001",
+      "name": "Focus Pod 1",
+      "type": "focus",
+      "floor": 3,
+      "building": "Tower A",
+      "capacity": 1,
+      "amenities": ["monitor", "noise cancellation"],
+      "available": true
+    },
+    {
+      "room_id": "FR002",
+      "name": "Focus Pod 2",
+      "type": "focus",
+      "floor": 3,
+      "building": "Tower A",
+      "capacity": 1,
+      "amenities": ["monitor", "noise cancellation"],
+      "available": true
+    },
+    {
+      "room_id": "FR003",
+      "name": "Focus Pod 3",
+      "type": "focus",
+      "floor": 4,
+      "building": "Tower B",
+      "capacity": 1,
+      "amenities": ["monitor", "noise cancellation"],
+      "available": true
+    },
+    {
+      "room_id": "FR004",
+      "name": "Focus Pod 4",
+      "type": "focus",
+      "floor": 2,
+      "building": "Tower C",
+      "capacity": 1,
+      "amenities": ["monitor", "noise cancellation"],
+      "available": true
+    },
+    {
+      "room_id": "FR005",
+      "name": "Quiet Zone A",
+      "type": "focus",
+      "floor": 6,
+      "building": "Tower B",
+      "capacity": 2,
+      "amenities": ["whiteboard", "noise cancellation"],
+      "available": true
+    }
+  ]
+}

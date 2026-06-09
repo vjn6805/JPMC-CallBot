@@ -43,8 +43,19 @@ FOR COMPANY KNOWLEDGE / POLICY QUESTIONS:
 - After answering, mention 1-2 related things they might want to know
 - If user asks what you can help with → call list_knowledge_topics
 
-FOR MEETING ROOMS:
-- Ask: how many people, which date, what time
+FOR FOOD ORDERING:
+- When user asks about food, what to eat, or a cuisine → call search_food with their query
+- Results are prioritised for their building automatically
+- Suggest the outlet and top 3 items with prices
+- If user wants to see full menu → call get_menu
+- Only call place_food_order AFTER user confirms exactly what they want
+- After ordering, tell them the order ID and that an SMS with payment link has been sent
+- Never place an order without explicit user confirmation
+
+FOR MEETING ROOMS AND FOCUS ROOMS:
+- When user says "focus room" or "quiet room" or "solo room" → book a focus room (type: focus)
+- When user says "meeting room" or mentions multiple people → book a meeting room (type: meeting)
+- Ask: how many people, which date, what time, which building (default to their building)
 - Call check_room_availability → suggest best room → ask for confirmation
 - Only call book_room AFTER user says yes → confirm booking ID
 
@@ -128,13 +139,15 @@ RULES:
           type: "function",
           function: {
             name: "check_room_availability",
-            description: "Check which meeting rooms are available for a given date, time and number of people",
+            description: "Check available meeting rooms or focus rooms for a given date, time, people count and building",
             parameters: {
               type: "object",
               properties: {
                 date: { type: "string", description: "Date in YYYY-MM-DD format" },
                 start_time: { type: "string", description: "Start time in HH:MM 24hr format" },
-                capacity_needed: { type: "number", description: "Number of people attending" }
+                capacity_needed: { type: "number", description: "Number of people attending" },
+                room_type: { type: "string", enum: ["meeting", "focus"], description: "'meeting' for group meetings, 'focus' for solo quiet work" },
+                building: { type: "string", description: "Preferred building e.g. Tower A, Tower B, Tower C. Use employee's building by default." }
               },
               required: ["date", "start_time", "capacity_needed"]
             }
@@ -184,7 +197,53 @@ RULES:
           },
           server: { url: `${SERVER_URL}/meetingroom/my-bookings` }
         },
-        // ── Knowledge Base / Document RAG Tools ──
+        // ── Food Ordering Tools ──
+        {
+          type: "function",
+          function: {
+            name: "search_food",
+            description: "Search for food outlets and menu items by cuisine type or dish name. Always call this first when user asks about food, what to eat, or a specific cuisine.",
+            parameters: {
+              type: "object",
+              properties: {
+                query: { type: "string", description: "Cuisine or dish the employee is looking for, e.g. 'chinese', 'biryani', 'healthy', 'coffee'" }
+              },
+              required: ["query"]
+            }
+          },
+          server: { url: `${SERVER_URL}/food/search` }
+        },
+        {
+          type: "function",
+          function: {
+            name: "get_menu",
+            description: "Get the full menu of a specific outlet by outlet_id before placing an order",
+            parameters: {
+              type: "object",
+              properties: {
+                outlet_id: { type: "string", description: "The outlet ID like OUT001" }
+              },
+              required: ["outlet_id"]
+            }
+          },
+          server: { url: `${SERVER_URL}/food/get-menu` }
+        },
+        {
+          type: "function",
+          function: {
+            name: "place_food_order",
+            description: "Place a food order after user confirms the items. Sends SMS confirmation with payment link.",
+            parameters: {
+              type: "object",
+              properties: {
+                outlet_id: { type: "string", description: "The outlet ID like OUT001" },
+                item_ids: { type: "array", items: { type: "string" }, description: "List of item IDs to order, e.g. ['DW001', 'DW003']" }
+              },
+              required: ["outlet_id", "item_ids"]
+            }
+          },
+          server: { url: `${SERVER_URL}/food/place-order` }
+        },
         {
           type: "function",
           function: {

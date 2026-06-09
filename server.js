@@ -90,6 +90,9 @@ app.use('/meetingroom', meetingRoomRoutes);
 const ragRoutes = require('./routes/rag');
 app.use('/rag', ragRoutes);
 
+const foodRoutes = require('./routes/food');
+app.use('/food', foodRoutes);
+
 // ─────────────────────────────────────────────
 // ROUTE 1: Twilio incoming call
 // Phase 1 auth + hand off to vAPI

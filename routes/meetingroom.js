@@ -76,12 +76,15 @@ router.post('/check-availability', (req, res) => {
   }
 
   const { rooms } = readJSON(ROOMS_PATH);
-  const needed = parseInt(capacity_needed) || 2;
+  const needed   = parseInt(capacity_needed) || 2;
+  const roomType = args.room_type || 'meeting'; // 'meeting' or 'focus'
+  const building = args.building || null;
 
-  // Filter rooms that fit capacity and are not already booked
   const available = rooms.filter(room =>
+    room.type === roomType &&
     room.capacity >= needed &&
     room.available &&
+    (!building || room.building === building) &&
     !isRoomBooked(room.room_id, date, start_time)
   );
 
