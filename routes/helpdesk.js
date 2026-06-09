@@ -70,6 +70,50 @@ function vapiResponse(res, toolCallId, resultText) {
 }
 
 // ─────────────────────────────────────────────
+// TOOL 0: Get quick fix suggestions
+// Called before raising a ticket — tries to
+// resolve the issue with self-service steps
+// ─────────────────────────────────────────────
+router.post('/get-quick-fix', (req, res) => {
+  console.log('📥 get-quick-fix');
+
+  const args = extractArgs(req);
+  const toolCallId = req.body?.message?.toolCallList?.[0]?.id
+    || req.body?.message?.toolCalls?.[0]?.id
+    || 'tool-call-1';
+
+  const { issue_description } = args;
+
+  if (!issue_description) {
+    return vapiResponse(res, toolCallId,
+      'Could you describe your issue so I can suggest a fix?'
+    );
+  }
+
+  const category = detectCategory(issue_description);
+  const fixes = category.quick_fixes || [];
+
+  if (!fixes.length || category.id === 'OTHER') {
+    return vapiResponse(res, toolCallId,
+      `NO_QUICK_FIX. Category is ${category.label}.`
+    );
+  }
+
+  // Return fixes as numbered steps with human-like pacing cues
+  const steps = fixes.slice(0, 2);
+  const stepText = steps
+    .map((fix, i) => `Step ${i + 1}: ${fix}`)
+    .join(' ... ');
+
+  return vapiResponse(res, toolCallId,
+    `QUICK_FIX_AVAILABLE. Category: ${category.label}. ` +
+    `Okay, let me walk you through this one step at a time. ... ${stepText} ... ` +
+    `Take your time with each step, and let me know once you have tried that. ... ` +
+    `ASK_USER: Did that resolve your issue, or would you like me to raise a support ticket?`
+  );
+});
+
+// ─────────────────────────────────────────────
 // TOOL 1: Raise a new IT ticket
 // ─────────────────────────────────────────────
 router.post('/raise-ticket', (req, res) => {

@@ -1,0 +1,38 @@
+{
+  "document_id": "DOC-OB-002",
+  "title": "JPMC New Joiner Onboarding Guide",
+  "category": "Onboarding",
+  "tags": ["onboarding", "new joiner", "joining", "first day", "setup", "access", "badge", "laptop", "id card", "orientation"],
+  "sections": [
+    {
+      "id": "ob-002-day1",
+      "heading": "Day 1 Checklist",
+      "content": "On your first day at JPMC, report to the Ground Floor reception of your assigned tower by 9:00 AM. Carry your offer letter, government-issued photo ID, and 2 passport-size photographs. You will be greeted by your HR buddy who will guide you through the day. Your temporary access badge will be issued at the security desk. A welcome kit including your laptop, mouse, and headset will be available at your workstation. You will attend a mandatory orientation session from 10:00 AM to 1:00 PM in the auditorium.",
+      "keywords": ["first day", "day 1", "joining", "report", "orientation", "welcome kit", "what to bring", "badge", "access card"]
+    },
+    {
+      "id": "ob-002-systems",
+      "heading": "System Access and Tools Setup",
+      "content": "All JPMC employees use Windows laptops pre-configured with Microsoft Office 365, MS Teams, and the JPMC VPN client. On day 1, you will receive your employee ID (SID) and temporary password via your personal email. First login must be done on the office network. You must reset your password within 24 hours and enroll in Multi-Factor Authentication (MFA) via the MyID portal. Required tools include: Jira for task tracking, Confluence for documentation, GitHub Enterprise for code, and ServiceNow for IT requests.",
+      "keywords": ["laptop", "system", "access", "tools", "jira", "confluence", "github", "vpn", "mfa", "password", "sid", "employee id", "setup", "ms teams"]
+    },
+    {
+      "id": "ob-002-buddy",
+      "heading": "Buddy Program",
+      "content": "Every new joiner is assigned an HR buddy and a technical buddy for the first 30 days. The HR buddy helps with administrative tasks, policy questions, and settling in. The technical buddy assists with codebase understanding, tool setup, and team introductions. Buddy sessions are scheduled every alternate day for the first 2 weeks and weekly thereafter. You can reach your buddy on MS Teams. If your buddy is unavailable, contact your HR point of contact at newjoiner.support@jpmc.com.",
+      "keywords": ["buddy", "mentor", "support", "help", "new joiner support", "hr buddy", "technical buddy"]
+    },
+    {
+      "id": "ob-002-cafeteria",
+      "heading": "Cafeteria and Food",
+      "content": "JPMC campuses have subsidised cafeterias on every floor starting from Floor 2. Breakfast is served from 8:00 AM to 10:00 AM, lunch from 12:30 PM to 2:30 PM, and snacks from 4:00 PM to 5:00 PM. Employees can pre-order meals via the JPMC Food App available on the intranet. The cafeteria accepts JPMC meal cards which can be loaded via the HR portal. Vegetarian, vegan, and Jain meal options are available daily. Special dietary requirements can be registered with the cafeteria manager.",
+      "keywords": ["cafeteria", "food", "lunch", "breakfast", "meal", "canteen", "food app", "meal card", "eating", "snacks"]
+    },
+    {
+      "id": "ob-002-parking",
+      "heading": "Parking and Commute",
+      "content": "JPMC provides free parking for employees on a first-come-first-served basis in the basement. Parking passes are issued by the facilities team and must be applied for within the first week of joining via the Facilities portal. JPMC operates a free shuttle service from 5 nearby metro stations: Powai, Andheri, BKC, Lower Parel, and Thane. Shuttle timings are available on the JPMC intranet under the Transport section. Employees can also register for the carpool program via the JPMC Connect app.",
+      "keywords": ["parking", "shuttle", "transport", "commute", "metro", "carpool", "bus", "cab", "travel"]
+    }
+  ]
+}

@@ -9,10 +9,6 @@ async function createAssistant() {
   const assistantConfig = {
     name: "JPMC Employee Assistant",
 
-    // ── SERVER WEBHOOK ──────────────────────────────────────────
-    // vAPI calls this BEFORE the assistant says anything.
-    // We return a custom firstMessage based on auth result.
-    // This is infrastructure-level auth, not LLM-level.
     server: {
       url: `${SERVER_URL}/vapi/auth-hook`
     },
@@ -23,22 +19,34 @@ async function createAssistant() {
       messages: [
         {
           role: "system",
-          content: `You are Alex, a JPMC employee assistant for IT Helpdesk and Meeting Room reservations.
+          content: `You are Alex, a JPMC employee assistant for IT Helpdesk, Meeting Room reservations, and company knowledge.
 
-The caller has already been verified by the system before this conversation started.
-Their name and details are already confirmed — do NOT ask for name or employee ID.
+The caller has already been verified. Do NOT ask for name or employee ID.
 
-FOR IT ISSUES:
-- Ask what the problem is
-- Call raise_ticket immediately after they describe it
-- Confirm ticket ID and which team will handle it
+FOR IT ISSUES — follow this exact flow:
+1. Listen to the employee's problem
+2. Call get_quick_fix with their issue description
+3. If result contains "QUICK_FIX_AVAILABLE":
+   - Say "Okay, let me help you fix this. I will go step by step, so take your time."
+   - Read ONLY Step 1 first. Then say "Let me know when you have done that."
+   - Wait for user to respond before moving to Step 2
+   - After Step 2, ask "Did that resolve your issue, or shall I raise a support ticket?"
+   - If YES resolved → "Great, glad that worked! Is there anything else I can help you with?"
+   - If NO / still broken → call raise_ticket and confirm the ticket ID and team
+4. If result contains "NO_QUICK_FIX": go straight to raise_ticket
+5. Never raise a ticket without trying get_quick_fix first
+6. Never read all steps at once — always one step at a time, wait for confirmation
+
+FOR COMPANY KNOWLEDGE / POLICY QUESTIONS:
+- Any question about HR, leave, WFH, onboarding, tools, benefits, insurance, bonus, git, deployment, compliance → call search_knowledge_base
+- Always cite the source: "According to the JPMC HR Policy..."
+- After answering, mention 1-2 related things they might want to know
+- If user asks what you can help with → call list_knowledge_topics
 
 FOR MEETING ROOMS:
 - Ask: how many people, which date, what time
-- Call check_room_availability
-- Suggest best room, ask for confirmation
-- Only call book_room AFTER user says yes
-- Confirm booking ID at the end
+- Call check_room_availability → suggest best room → ask for confirmation
+- Only call book_room AFTER user says yes → confirm booking ID
 
 FOR CANCELLATIONS: ask for booking/ticket ID → call the cancel tool
 FOR LISTING: call my_bookings or my_tickets as appropriate
@@ -54,11 +62,30 @@ RULES:
       ],
 
       tools: [
+        // ── IT Helpdesk Tools ──
+        {
+          type: "function",
+          function: {
+            name: "get_quick_fix",
+            description: "ALWAYS call this first when an employee reports an IT issue. Returns self-service fix steps to try before raising a ticket.",
+            parameters: {
+              type: "object",
+              properties: {
+                issue_description: {
+                  type: "string",
+                  description: "Description of the IT issue in the employee's words"
+                }
+              },
+              required: ["issue_description"]
+            }
+          },
+          server: { url: `${SERVER_URL}/helpdesk/get-quick-fix` }
+        },
         {
           type: "function",
           function: {
             name: "raise_ticket",
-            description: "Raise a new IT support ticket when employee describes an issue",
+            description: "Raise a new IT support ticket. Only call this after get_quick_fix has been tried and the issue is not resolved.",
             parameters: {
               type: "object",
               properties: {
@@ -96,6 +123,7 @@ RULES:
           },
           server: { url: `${SERVER_URL}/helpdesk/my-tickets` }
         },
+        // ── Meeting Room Tools ──
         {
           type: "function",
           function: {
@@ -155,13 +183,36 @@ RULES:
             parameters: { type: "object", properties: {}, required: [] }
           },
           server: { url: `${SERVER_URL}/meetingroom/my-bookings` }
+        },
+        // ── Knowledge Base / Document RAG Tools ──
+        {
+          type: "function",
+          function: {
+            name: "search_knowledge_base",
+            description: "Search JPMC internal documents to answer questions about HR policies, onboarding, engineering guidelines, employee benefits, compliance, leave, WFH, tools, insurance, bonus, git, deployment, and any other company policy questions.",
+            parameters: {
+              type: "object",
+              properties: {
+                query: {
+                  type: "string",
+                  description: "The employee's question in natural language"
+                }
+              },
+              required: ["query"]
+            }
+          },
+          server: { url: `${SERVER_URL}/rag/search` }
+        },
+        {
+          type: "function",
+          function: {
+            name: "list_knowledge_topics",
+            description: "List all topics available in the JPMC knowledge base. Call this when user asks what you can help with.",
+            parameters: { type: "object", properties: {}, required: [] }
+          },
+          server: { url: `${SERVER_URL}/rag/topics` }
         }
       ]
-    },
-
-    voice: {
-      provider: "11labs",
-      voiceId: "burt"
     },
 
     voice: {

@@ -1,0 +1,32 @@
+{
+  "document_id": "DOC-BEN-004",
+  "title": "JPMC Employee Benefits Guide",
+  "category": "Benefits",
+  "tags": ["benefits", "insurance", "health", "medical", "gratuity", "pf", "provident fund", "gym", "wellness", "stock", "bonus", "salary"],
+  "sections": [
+    {
+      "id": "ben-004-health",
+      "heading": "Health Insurance",
+      "content": "JPMC provides comprehensive health insurance to all employees and their immediate family (spouse, 2 children, and dependent parents). The base cover is INR 5 lakhs per family per year under a group mediclaim policy. Employees can top up their cover to INR 10 lakhs or INR 20 lakhs at subsidised premiums deducted from salary. The insurance covers hospitalisation, pre and post-hospitalisation expenses, day care procedures, and ambulance charges. Maternity cover of INR 75,000 is included. Dental and vision coverage is available as an add-on. Claims can be filed via the InsuranceConnect portal on the intranet.",
+      "keywords": ["health insurance", "medical", "insurance", "mediclaim", "hospitalisation", "maternity", "dental", "vision", "claims", "cover"]
+    },
+    {
+      "id": "ben-004-pf",
+      "heading": "Provident Fund and Gratuity",
+      "content": "JPMC contributes 12% of basic salary to the Employee Provident Fund (EPF) each month, matched by an equal employer contribution. Employees can make voluntary PF contributions above 12% via the HR portal. PF withdrawal is permitted after 5 years of continuous service for specific purposes (home purchase, medical emergency, education). Gratuity is payable after 5 years of continuous service at the rate of 15 days salary per completed year. PF and gratuity statements are available on the EPFO portal and the JPMC HR dashboard respectively.",
+      "keywords": ["pf", "provident fund", "epf", "gratuity", "retirement", "savings", "contribution", "withdrawal"]
+    },
+    {
+      "id": "ben-004-wellness",
+      "heading": "Wellness and Gym Benefits",
+      "content": "JPMC employees get complimentary access to the on-campus gym available on Floor B2 of Tower A, open from 6:00 AM to 10:00 PM on all working days. Employees also receive a reimbursement of INR 2,500 per month for external gym memberships or wellness apps (Cult.fit, HealthifyMe, etc.) upon submission of receipts via the HR portal. Mental health support is available through the Employee Assistance Program (EAP) which provides 6 free confidential counselling sessions per year. Yoga and meditation sessions are held every Tuesday and Thursday at 7:30 AM in the wellness room on Floor 5.",
+      "keywords": ["gym", "wellness", "fitness", "health", "mental health", "counselling", "yoga", "meditation", "eap", "reimbursement"]
+    },
+    {
+      "id": "ben-004-bonus",
+      "heading": "Bonus and Incentives",
+      "content": "JPMC pays an annual performance bonus in May each year. Bonus is calculated as a percentage of annual CTC based on individual rating and business performance: Outstanding - up to 25% of CTC, Exceeds Expectations - up to 18%, Meets Expectations - up to 12%, Needs Improvement - 0%. A joining bonus (if applicable) is paid in the first salary and is subject to a 12-month clawback clause. Referral bonuses of INR 30,000 are paid for successful referrals after 90 days of the referred employee's joining.",
+      "keywords": ["bonus", "incentive", "performance bonus", "annual bonus", "joining bonus", "referral bonus", "salary", "increment", "hike", "compensation"]
+    }
+  ]
+}

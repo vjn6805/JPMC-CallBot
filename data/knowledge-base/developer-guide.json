@@ -1,0 +1,38 @@
+{
+  "document_id": "DOC-DEV-003",
+  "title": "JPMC Engineering Developer Guide",
+  "category": "Engineering",
+  "tags": ["development", "coding", "github", "deployment", "code review", "ci cd", "engineering", "devops", "branching", "release"],
+  "sections": [
+    {
+      "id": "dev-003-branching",
+      "heading": "Git Branching Strategy",
+      "content": "JPMC follows the GitFlow branching strategy. The main branches are: main (production), develop (integration), and feature branches. All new development must happen on feature branches named as feature/JIRA-TICKET-ID-short-description. Feature branches are merged into develop via Pull Requests after at least 2 approvals. Hotfixes use the prefix hotfix/ and are merged directly into main and develop. No direct commits to main or develop are permitted. Branch protection rules are enforced on GitHub Enterprise.",
+      "keywords": ["git", "branching", "github", "gitflow", "pull request", "pr", "merge", "feature branch", "hotfix", "code review", "commit"]
+    },
+    {
+      "id": "dev-003-cicd",
+      "heading": "CI/CD Pipeline",
+      "content": "All JPMC services use Jenkins for CI/CD. On every pull request, the pipeline runs: unit tests, integration tests, SonarQube static code analysis, and a Docker build. Deployments to UAT happen automatically on merge to develop. Production deployments require a Change Request (CR) approved by the Release Manager and can only happen during the release window: Tuesday and Thursday between 10 PM and 2 AM IST. Emergency hotfixes follow the P1 deployment process which requires CISO approval. All deployments are logged in ServiceNow.",
+      "keywords": ["ci cd", "jenkins", "pipeline", "deployment", "production", "release", "sonarqube", "docker", "uat", "change request", "devops"]
+    },
+    {
+      "id": "dev-003-codereview",
+      "heading": "Code Review Standards",
+      "content": "All code at JPMC must undergo peer review before merging. A minimum of 2 approvals are required for feature branches and 3 approvals for hotfixes. Reviewers must check for: security vulnerabilities (OWASP Top 10), performance bottlenecks, test coverage (minimum 80% required), and adherence to JPMC coding standards. Code review must be completed within 2 business days. Use of SonarLint in your IDE is mandatory. Comments must be resolved before merging. Review findings are categorised as Blocker, Major, Minor, and Info.",
+      "keywords": ["code review", "pull request", "review", "approvals", "sonar", "testing", "coverage", "security", "owasp"]
+    },
+    {
+      "id": "dev-003-environments",
+      "heading": "Environments and Access",
+      "content": "JPMC maintains 4 environments: Development (DEV), Quality Assurance (QA), User Acceptance Testing (UAT), and Production (PROD). Developers have full access to DEV and read access to QA. UAT access is granted upon request to the DevOps team via ServiceNow. Production access is restricted and requires VP approval. All environment credentials are stored in HashiCorp Vault — never hardcode credentials in code. Use environment variables or Vault SDK for secrets management. Production database access is logged and audited.",
+      "keywords": ["environments", "dev", "qa", "uat", "production", "prod", "access", "credentials", "vault", "secrets", "database"]
+    },
+    {
+      "id": "dev-003-standards",
+      "heading": "Coding Standards",
+      "content": "JPMC enforces language-specific coding standards. For Java: follow Google Java Style Guide with 4-space indentation. For Python: PEP8 compliance is mandatory, enforced via flake8. For JavaScript/TypeScript: Airbnb style guide with ESLint. All services must have a README with setup instructions, API documentation using Swagger/OpenAPI, and a CHANGELOG. Log levels must follow: ERROR for failures, WARN for degraded performance, INFO for business events, DEBUG for development only. No System.out.println or console.log in production code.",
+      "keywords": ["coding standards", "style guide", "java", "python", "javascript", "typescript", "eslint", "pep8", "readme", "logging", "swagger"]
+    }
+  ]
+}

@@ -1,46 +1,91 @@
 {
-    "categories": [
-      {
-        "id": "LAPTOP",
-        "label": "Laptop / Hardware Issue",
-        "keywords": ["laptop", "computer", "screen", "keyboard", "mouse", "hardware", "slow", "crash", "frozen"],
-        "sla_hours": 4,
-        "team": "Hardware Support Team"
-      },
-      {
-        "id": "NETWORK",
-        "label": "Network / VPN Issue",
-        "keywords": ["internet", "wifi", "network", "vpn", "connection", "no internet", "disconnected"],
-        "sla_hours": 2,
-        "team": "Network Support Team"
-      },
-      {
-        "id": "ACCESS",
-        "label": "Access / Password Issue",
-        "keywords": ["password", "locked", "access", "login", "cannot login", "account", "reset"],
-        "sla_hours": 1,
-        "team": "Identity & Access Team"
-      },
-      {
-        "id": "SOFTWARE",
-        "label": "Software / Application Issue",
-        "keywords": ["software", "application", "app", "install", "outlook", "teams", "excel", "error", "not opening"],
-        "sla_hours": 6,
-        "team": "Software Support Team"
-      },
-      {
-        "id": "PRINTER",
-        "label": "Printer / Scanner Issue",
-        "keywords": ["printer", "print", "scanner", "scan", "photocopy"],
-        "sla_hours": 8,
-        "team": "Hardware Support Team"
-      },
-      {
-        "id": "OTHER",
-        "label": "Other IT Issue",
-        "keywords": [],
-        "sla_hours": 24,
-        "team": "General IT Support"
-      }
-    ]
-  }
+  "categories": [
+    {
+      "id": "LAPTOP",
+      "label": "Laptop / Hardware Issue",
+      "keywords": ["laptop", "computer", "screen", "keyboard", "mouse", "hardware", "slow", "crash", "frozen", "not turning on", "black screen", "headphone", "headset", "audio", "speaker", "charging", "battery"],
+      "sla_hours": 4,
+      "team": "Hardware Support Team",
+      "quick_fixes": [
+        "Try a full restart — hold the power button for 10 seconds, wait 30 seconds, then turn it back on.",
+        "If the screen is black, press Windows + Ctrl + Shift + B to reset the display driver.",
+        "If it is slow or frozen, open Task Manager with Ctrl + Shift + Esc and end any process using over 90% CPU or memory.",
+        "For headphone or audio issues, right-click the speaker icon in the taskbar, click Open Sound Settings, and make sure the correct output device is selected.",
+        "If the laptop is not charging, try unplugging and re-plugging the charger, and check if the charging port has any dust or debris.",
+        "For keyboard or mouse issues, try disconnecting and reconnecting the device, or test with a different USB port."
+      ]
+    },
+    {
+      "id": "NETWORK",
+      "label": "Network / VPN Issue",
+      "keywords": ["internet", "wifi", "network", "vpn", "connection", "no internet", "disconnected", "slow internet", "cannot connect"],
+      "sla_hours": 2,
+      "team": "Network Support Team",
+      "quick_fixes": [
+        "Toggle your WiFi off and on — click the WiFi icon in the taskbar, turn it off, wait 10 seconds, then turn it back on.",
+        "For VPN issues, disconnect from the JPMC VPN, wait 30 seconds, then reconnect. Make sure you are on a stable network first.",
+        "Try forgetting the WiFi network and reconnecting — go to Settings, Network, WiFi, Manage Known Networks, forget JPMC-WiFi, then reconnect.",
+        "Restart your network adapter — open Device Manager, expand Network Adapters, right-click your WiFi adapter, and select Disable then Enable.",
+        "If only certain websites are blocked, it may be a proxy issue — check that your browser proxy settings are set to Automatic.",
+        "Run the Windows Network Troubleshooter — right-click the network icon in taskbar and select Troubleshoot Problems."
+      ]
+    },
+    {
+      "id": "ACCESS",
+      "label": "Access / Password Issue",
+      "keywords": ["password", "locked", "access", "login", "cannot login", "account", "reset", "locked out", "forgot password", "mfa", "two factor", "authenticator"],
+      "sla_hours": 1,
+      "team": "Identity & Access Team",
+      "quick_fixes": [
+        "For a forgotten password, go to the JPMC MyID portal at myid.jpmc.com and click Forgot Password to reset it using your registered mobile number.",
+        "If your account is locked after too many failed attempts, wait 15 minutes and try again — accounts auto-unlock after 15 minutes.",
+        "For MFA issues, open the Microsoft Authenticator app and check if the time sync is correct — go to app Settings and tap Verify Time.",
+        "If you cannot access a specific application, check if your VPN is connected — most internal apps require VPN.",
+        "For access to a new tool or system, raise an access request via ServiceNow at servicenow.jpmc.com — your manager needs to approve it.",
+        "Clear your browser cache and cookies, then try logging in again — this fixes most SSO login loops."
+      ]
+    },
+    {
+      "id": "SOFTWARE",
+      "label": "Software / Application Issue",
+      "keywords": ["software", "application", "app", "install", "outlook", "teams", "excel", "word", "error", "not opening", "crash", "ms teams", "microsoft", "office", "update"],
+      "sla_hours": 6,
+      "team": "Software Support Team",
+      "quick_fixes": [
+        "Close the application completely, wait 10 seconds, and reopen it — this resolves most temporary crashes.",
+        "For MS Teams issues, click your profile picture in Teams, go to Settings, and click Clear Cache — then restart Teams.",
+        "For Outlook not loading emails, go to File, Account Settings, and click Repair on your email account.",
+        "If an application is not opening at all, right-click it and select Run as Administrator.",
+        "Check if there is a pending Windows or application update — go to Settings, Windows Update, and install any pending updates, then restart.",
+        "For Excel or Word crashes, open the application in Safe Mode by holding Ctrl while clicking the app icon — this disables add-ins that may be causing the crash."
+      ]
+    },
+    {
+      "id": "PRINTER",
+      "label": "Printer / Scanner Issue",
+      "keywords": ["printer", "print", "scanner", "scan", "photocopy", "not printing", "paper jam", "offline", "toner"],
+      "sla_hours": 8,
+      "team": "Hardware Support Team",
+      "quick_fixes": [
+        "Check if the printer shows as Offline — go to Control Panel, Devices and Printers, right-click your printer, and select See what's printing, then click Printer and uncheck Use Printer Offline.",
+        "For a paper jam, turn the printer off, gently remove the jammed paper from the rear tray or front door, then turn it back on.",
+        "Clear the print queue — go to Devices and Printers, double-click the printer, and cancel all pending print jobs.",
+        "Try removing and re-adding the printer — go to Settings, Bluetooth and Devices, Printers and Scanners, remove the printer, then Add a Device.",
+        "Make sure the printer is connected to the same WiFi network as your laptop — check the printer's display panel for its network status.",
+        "For scanner issues, ensure the JPMC Scanner Driver is installed — you can download it from the IT Software Portal on the intranet."
+      ]
+    },
+    {
+      "id": "OTHER",
+      "label": "Other IT Issue",
+      "keywords": [],
+      "sla_hours": 24,
+      "team": "General IT Support",
+      "quick_fixes": [
+        "Try restarting your device — this resolves most common IT issues.",
+        "Check the JPMC IT Status Page on the intranet to see if there is a known outage affecting your issue.",
+        "Search for your issue on the JPMC ServiceNow knowledge base at servicenow.jpmc.com for self-service solutions."
+      ]
+    }
+  ]
+}

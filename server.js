@@ -87,6 +87,9 @@ app.use('/helpdesk', helpdeskRoutes);
 const meetingRoomRoutes = require('./routes/meetingroom');
 app.use('/meetingroom', meetingRoomRoutes);
 
+const ragRoutes = require('./routes/rag');
+app.use('/rag', ragRoutes);
+
 // ─────────────────────────────────────────────
 // ROUTE 1: Twilio incoming call
 // Phase 1 auth + hand off to vAPI

@@ -1,0 +1,38 @@
+{
+  "document_id": "DOC-HR-001",
+  "title": "JPMC HR Policy Guide 2024",
+  "category": "HR",
+  "tags": ["leave", "attendance", "wfh", "work from home", "remote", "policy", "hr", "holiday", "resignation", "notice period", "probation", "appraisal", "performance"],
+  "sections": [
+    {
+      "id": "hr-001-leave",
+      "heading": "Leave Policy",
+      "content": "JPMC employees are entitled to 24 paid leave days per year, comprising 12 casual leaves and 12 earned leaves. Leaves must be applied at least 2 working days in advance via the HR portal. Sick leave up to 7 days per year does not require prior approval but must be followed by a medical certificate for absences exceeding 3 consecutive days. Unused earned leaves can be carried forward up to a maximum of 30 days. Leave encashment is permitted at the time of resignation or annually in December.",
+      "keywords": ["leave", "casual leave", "earned leave", "sick leave", "leave encashment", "paid leave", "holiday", "time off", "days off"]
+    },
+    {
+      "id": "hr-001-wfh",
+      "heading": "Work From Home Policy",
+      "content": "JPMC follows a hybrid work model. Employees are required to be present in the office at least 3 days a week (Tuesday, Wednesday, Thursday are mandatory office days). Work from home is permitted on Monday and Friday subject to manager approval. Employees must be reachable on MS Teams and respond within 15 minutes during core hours of 10am to 5pm IST. WFH is not permitted during the first 90 days of joining (probation period). Extended WFH beyond 10 consecutive days requires HR approval.",
+      "keywords": ["wfh", "work from home", "remote work", "hybrid", "office days", "work from office", "wfo", "remote"]
+    },
+    {
+      "id": "hr-001-probation",
+      "heading": "Probation Period",
+      "content": "All new joiners at JPMC serve a probation period of 90 days from the date of joining. During probation, performance is reviewed at 30, 60, and 90 day intervals by the reporting manager. WFH is not permitted during probation. Leaves are limited to 3 days during the probation period. Confirmation is subject to satisfactory performance review. The probation period may be extended by up to 30 additional days at the manager's discretion.",
+      "keywords": ["probation", "new joiner", "confirmation", "90 days", "performance review", "joining"]
+    },
+    {
+      "id": "hr-001-resignation",
+      "heading": "Resignation and Notice Period",
+      "content": "Employees wishing to resign must submit a written resignation via the HR portal or email to their reporting manager with HR in copy. The standard notice period at JPMC is 60 days for all employees below VP grade and 90 days for VP and above. Notice period buyout is available at the discretion of the business unit head. Full and final settlement is processed within 45 working days of the last working day. Exit interviews are mandatory and scheduled by HR within the first week of notice.",
+      "keywords": ["resignation", "notice period", "quit", "exit", "last working day", "full and final", "fnf", "buyout", "leaving"]
+    },
+    {
+      "id": "hr-001-appraisal",
+      "heading": "Performance Appraisal Cycle",
+      "content": "JPMC conducts bi-annual performance appraisals in April and October. Employees are rated on a 5-point scale: Outstanding, Exceeds Expectations, Meets Expectations, Needs Improvement, and Unsatisfactory. Annual increments are processed in April and are linked to the October appraisal rating. Employees rated Needs Improvement for two consecutive cycles are placed on a Performance Improvement Plan (PIP). Self-assessments must be submitted by the 10th of the appraisal month.",
+      "keywords": ["appraisal", "performance review", "rating", "increment", "salary hike", "pip", "performance improvement plan", "promotion"]
+    }
+  ]
+}

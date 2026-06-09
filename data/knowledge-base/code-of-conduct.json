@@ -1,0 +1,32 @@
+{
+  "document_id": "DOC-SEC-005",
+  "title": "JPMC Code of Conduct and Security Policy",
+  "category": "Compliance",
+  "tags": ["security", "compliance", "conduct", "data", "confidential", "policy", "ethics", "conflict of interest", "social media", "insider trading"],
+  "sections": [
+    {
+      "id": "sec-005-data",
+      "heading": "Data Security and Confidentiality",
+      "content": "All JPMC employee data, client data, and business information is strictly confidential. Employees must never share confidential data outside the organisation via personal email, WhatsApp, USB drives, or unauthorised cloud storage. All data transfers must use JPMC-approved encrypted channels. Laptops must be locked when unattended and encrypted using BitLocker. Printing confidential documents requires manager approval and printed documents must be shredded after use. Violations of data security policy can result in immediate termination and legal action.",
+      "keywords": ["data security", "confidential", "data leak", "privacy", "encryption", "usb", "cloud", "personal email", "sharing data"]
+    },
+    {
+      "id": "sec-005-social",
+      "heading": "Social Media Policy",
+      "content": "Employees must not share any JPMC business information, client details, financial data, or internal communications on social media platforms including LinkedIn, Twitter, Instagram, or personal blogs. Employees may mention their role and employer on LinkedIn but must not post about ongoing projects, deals, or internal matters. JPMC monitors public social media for policy violations. Violations can result in disciplinary action. All external communications on behalf of JPMC must be approved by the Corporate Communications team.",
+      "keywords": ["social media", "linkedin", "twitter", "posting", "confidential", "public", "communication", "external"]
+    },
+    {
+      "id": "sec-005-insider",
+      "heading": "Insider Trading Policy",
+      "content": "As a financial institution, JPMC has strict insider trading policies. Employees with access to Material Non-Public Information (MNPI) about JPMC clients or business deals are prohibited from trading in related securities. All employees must complete the annual Insider Trading Compliance training on the Learning Portal. Employees must pre-clear personal trades above INR 1 lakh with the Compliance team. Violations of insider trading policy carry severe legal penalties and immediate termination. Report suspected insider trading to compliance@jpmc.com.",
+      "keywords": ["insider trading", "trading", "compliance", "mnpi", "securities", "stocks", "shares", "financial"]
+    },
+    {
+      "id": "sec-005-conduct",
+      "heading": "Workplace Conduct",
+      "content": "JPMC is committed to a respectful and inclusive workplace. Harassment, discrimination, or bullying of any form is strictly prohibited and should be reported to HR or via the anonymous Ethics Hotline at 1800-JPMC-ETHICS. All employees must complete the mandatory Code of Conduct training within 30 days of joining and annually thereafter. Conflicts of interest (e.g., working for a competitor, business dealings with relatives) must be disclosed to HR immediately. Gifts above INR 2,000 received from vendors or clients must be reported to the Compliance team.",
+      "keywords": ["conduct", "harassment", "discrimination", "ethics", "reporting", "conflict of interest", "gifts", "inclusive", "workplace", "hotline"]
+    }
+  ]
+}
