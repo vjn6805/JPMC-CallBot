@@ -1,62 +1,58 @@
 require('dotenv').config();
 
 const VAPI_API_KEY = process.env.VAPI_API_KEY;
-const SERVER_URL = process.env.SERVER_URL; // your ngrok URL
+const SERVER_URL = process.env.SERVER_URL;
 
-async function createITHelpdeskAssistant() {
-  console.log('🤖 Creating vAPI IT Helpdesk Assistant...');
+async function createAssistant() {
+  console.log('🤖 Creating vAPI JPMC Assistant...');
 
   const assistantConfig = {
-    name: "JPMC IT Helpdesk Assistant",
+    name: "JPMC Employee Assistant",
 
-    // The AI's personality and instructions
+    // ── SERVER WEBHOOK ──────────────────────────────────────────
+    // vAPI calls this BEFORE the assistant says anything.
+    // We return a custom firstMessage based on auth result.
+    // This is infrastructure-level auth, not LLM-level.
+    server: {
+      url: `${SERVER_URL}/vapi/auth-hook`
+    },
+
     model: {
       provider: "openai",
       model: "gpt-3.5-turbo",
       messages: [
         {
           role: "system",
-          content: `You are Alex, a smart and friendly assistant for JPMC employees.
-You help with IT Helpdesk issues AND Meeting Room reservations over a phone call.
+          content: `You are Alex, a JPMC employee assistant for IT Helpdesk and Meeting Room reservations.
 
-CRITICAL RULES:
-- Caller is already verified — never ask for name or employee ID
-- Keep every response under 3 sentences — this is a phone call
-- Be warm, confident, and efficient
+The caller has already been verified by the system before this conversation started.
+Their name and details are already confirmed — do NOT ask for name or employee ID.
 
 FOR IT ISSUES:
 - Ask what the problem is
-- Immediately raise a ticket using raise_ticket
+- Call raise_ticket immediately after they describe it
 - Confirm ticket ID and which team will handle it
 
 FOR MEETING ROOMS:
 - Ask: how many people, which date, what time
-- Call check_room_availability to find options
-- Suggest the best room and ask for confirmation
-- Only call book_room AFTER the user says yes
-- Always confirm booking ID at the end
+- Call check_room_availability
+- Suggest best room, ask for confirmation
+- Only call book_room AFTER user says yes
+- Confirm booking ID at the end
 
-FOR CANCELLATIONS:
-- Ask for the booking ID
-- Call cancel_booking to cancel it
+FOR CANCELLATIONS: ask for booking/ticket ID → call the cancel tool
+FOR LISTING: call my_bookings or my_tickets as appropriate
 
-FOR LISTING BOOKINGS:
-- Call my_bookings to list their upcoming rooms
+HANDLING DATES:
+- Today is ${new Date().toISOString().split('T')[0]}
+- Convert "tomorrow", "3pm" etc. to proper format before calling tools
 
-HANDLING DATES AND TIMES:
-- Today's date is ${new Date().toISOString().split('T')[0]}
-- If user says "tomorrow", calculate the correct date
-- If user says "3pm", convert to 15:00
-- Always confirm the date and time back to the user before booking
-
-If any tool fails, say:
-"I am having trouble with the system right now. Please visit the facilities desk or call extension 1234."
-
-Never say "there is an issue with the system" — always offer an alternative.`
+RULES:
+- Max 2-3 sentences per response — this is a phone call
+- If a tool fails: "I'm having trouble right now. Please call extension 1234."`
         }
       ],
 
-      // Tools vAPI can call on your server
       tools: [
         {
           type: "function",
@@ -66,30 +62,15 @@ Never say "there is an issue with the system" — always offer an alternative.`
             parameters: {
               type: "object",
               properties: {
-                employee_sid: {
-                  type: "string",
-                  description: "The employee's SID/ID"
-                },
-                employee_name: {
-                  type: "string",
-                  description: "The employee's full name"
-                },
-                phone_number: {
-                  type: "string",
-                  description: "The employee's phone number"
-                },
                 issue_description: {
                   type: "string",
                   description: "Description of the IT issue in the employee's words"
                 }
               },
-              required: ["employee_sid", "issue_description"]
+              required: ["issue_description"]
             }
           },
-          // Where vAPI sends the tool call
-          server: {
-            url: `${SERVER_URL}/helpdesk/raise-ticket`
-          }
+          server: { url: `${SERVER_URL}/helpdesk/raise-ticket` }
         },
         {
           type: "function",
@@ -99,144 +80,97 @@ Never say "there is an issue with the system" — always offer an alternative.`
             parameters: {
               type: "object",
               properties: {
-                ticket_id: {
-                  type: "string",
-                  description: "The ticket ID like JPMC-IT-1001"
-                }
+                ticket_id: { type: "string", description: "The ticket ID like JPMC-IT-1001" }
               },
               required: ["ticket_id"]
             }
           },
-          server: {
-            url: `${SERVER_URL}/helpdesk/check-ticket`
-          }
+          server: { url: `${SERVER_URL}/helpdesk/check-ticket` }
         },
         {
           type: "function",
           function: {
             name: "my_tickets",
             description: "List all tickets raised by the employee",
+            parameters: { type: "object", properties: {}, required: [] }
+          },
+          server: { url: `${SERVER_URL}/helpdesk/my-tickets` }
+        },
+        {
+          type: "function",
+          function: {
+            name: "check_room_availability",
+            description: "Check which meeting rooms are available for a given date, time and number of people",
             parameters: {
               type: "object",
               properties: {
-                employee_sid: {
-                  type: "string",
-                  description: "The employee's SID/ID"
-                }
+                date: { type: "string", description: "Date in YYYY-MM-DD format" },
+                start_time: { type: "string", description: "Start time in HH:MM 24hr format" },
+                capacity_needed: { type: "number", description: "Number of people attending" }
               },
-              required: ["employee_sid"]
+              required: ["date", "start_time", "capacity_needed"]
             }
           },
-          server: {
-            url: `${SERVER_URL}/helpdesk/my-tickets`
-          }
+          server: { url: `${SERVER_URL}/meetingroom/check-availability` }
         },
-        // ── Meeting Room Tools ──
-{
-  type: "function",
-  function: {
-    name: "check_room_availability",
-    description: "Check which meeting rooms are available for a given date, time and number of people",
-    parameters: {
-      type: "object",
-      properties: {
-        date: {
-          type: "string",
-          description: "Date in YYYY-MM-DD format, e.g. 2026-06-10"
+        {
+          type: "function",
+          function: {
+            name: "book_room",
+            description: "Book a specific meeting room after user confirms",
+            parameters: {
+              type: "object",
+              properties: {
+                room_name: { type: "string", description: "Name of the room e.g. Aqua, Horizon" },
+                date: { type: "string", description: "Date in YYYY-MM-DD format" },
+                start_time: { type: "string", description: "Start time in HH:MM 24hr format" },
+                duration_hours: { type: "number", description: "Duration in hours, default 1" },
+                agenda: { type: "string", description: "Brief agenda of the meeting" }
+              },
+              required: ["room_name", "date", "start_time"]
+            }
+          },
+          server: { url: `${SERVER_URL}/meetingroom/book-room` }
         },
-        start_time: {
-          type: "string",
-          description: "Start time in HH:MM 24hr format, e.g. 14:00 for 2pm"
+        {
+          type: "function",
+          function: {
+            name: "cancel_booking",
+            description: "Cancel an existing room booking",
+            parameters: {
+              type: "object",
+              properties: {
+                booking_id: { type: "string", description: "Booking ID like JPMC-RM-2001" }
+              },
+              required: ["booking_id"]
+            }
+          },
+          server: { url: `${SERVER_URL}/meetingroom/cancel-booking` }
         },
-        capacity_needed: {
-          type: "number",
-          description: "Number of people who need to attend"
+        {
+          type: "function",
+          function: {
+            name: "my_bookings",
+            description: "List all upcoming room bookings for the caller",
+            parameters: { type: "object", properties: {}, required: [] }
+          },
+          server: { url: `${SERVER_URL}/meetingroom/my-bookings` }
         }
-      },
-      required: ["date", "start_time", "capacity_needed"]
-    }
-  },
-  server: { url: `${SERVER_URL}/meetingroom/check-availability` }
-},
-{
-  type: "function",
-  function: {
-    name: "book_room",
-    description: "Book a specific meeting room after the user confirms they want it",
-    parameters: {
-      type: "object",
-      properties: {
-        room_name: {
-          type: "string",
-          description: "Name of the room to book, e.g. Aqua, Horizon, Zenith"
-        },
-        date: {
-          type: "string",
-          description: "Date in YYYY-MM-DD format"
-        },
-        start_time: {
-          type: "string",
-          description: "Start time in HH:MM 24hr format"
-        },
-        duration_hours: {
-          type: "number",
-          description: "Duration of the meeting in hours, default is 1"
-        },
-        agenda: {
-          type: "string",
-          description: "Brief agenda or purpose of the meeting"
-        }
-      },
-      required: ["room_name", "date", "start_time"]
-    }
-  },
-  server: { url: `${SERVER_URL}/meetingroom/book-room` }
-},
-{
-  type: "function",
-  function: {
-    name: "cancel_booking",
-    description: "Cancel an existing room booking using the booking ID",
-    parameters: {
-      type: "object",
-      properties: {
-        booking_id: {
-          type: "string",
-          description: "The booking ID like JPMC-RM-2001"
-        }
-      },
-      required: ["booking_id"]
-    }
-  },
-  server: { url: `${SERVER_URL}/meetingroom/cancel-booking` }
-},
-{
-  type: "function",
-  function: {
-    name: "my_bookings",
-    description: "List all upcoming room bookings for the caller",
-    parameters: {
-      type: "object",
-      properties: {},
-      required: []
-    }
-  },
-  server: { url: `${SERVER_URL}/meetingroom/my-bookings` }
-},
       ]
     },
 
-    // Voice settings
     voice: {
-        provider: "11labs",
-        voiceId: "burt"
+      provider: "11labs",
+      voiceId: "burt"
     },
 
-    // Call settings
-    firstMessage: "Hello! I'm Alex from the JPMC IT Helpdesk. How can I help you today?",
-    endCallMessage: "Your issue has been noted. Have a great day!",
+    voice: {
+      provider: "11labs",
+      voiceId: "burt"
+    },
 
-    // End call if user says bye/thanks
+    firstMessage: "Hello! I'm Alex from JPMC. How can I help you today?",
+    endCallMessage: "Thank you. Have a great day!",
     endCallPhrases: ["goodbye", "bye", "thank you bye", "that's all", "nothing else"]
   };
 
@@ -255,13 +189,13 @@ Never say "there is an issue with the system" — always offer an alternative.`
     if (data.id) {
       console.log('✅ Assistant created successfully!');
       console.log(`📋 Assistant ID: ${data.id}`);
-      console.log('👉 Copy this ID and add it to your .env as VAPI_ASSISTANT_ID');
+      console.log('👉 Add this to your .env as VAPI_ASSISTANT_ID');
     } else {
-      console.log('❌ Error creating assistant:', JSON.stringify(data, null, 2));
+      console.log('❌ Error:', JSON.stringify(data, null, 2));
     }
   } catch (err) {
-    console.error('❌ Failed to create assistant:', err.message);
+    console.error('❌ Failed:', err.message);
   }
 }
 
-createITHelpdeskAssistant();
+createAssistant();
