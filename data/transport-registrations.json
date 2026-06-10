@@ -1,0 +1,31 @@
+{
+  "registrations": [
+    {
+      "employee_sid": "EMP001",
+      "phone_number": "+917485963139",
+      "name": "Veer Jain",
+      "home_area": "Powai",
+      "home_address": "Powai, Mumbai - 400076",
+      "assigned_routes": ["RT001", "RT003"],
+      "registered": true
+    },
+    {
+      "employee_sid": "EMP002",
+      "phone_number": "+919123456789",
+      "name": "Priya Mehta",
+      "home_area": "Andheri",
+      "home_address": "Andheri West, Mumbai - 400058",
+      "assigned_routes": ["RT002"],
+      "registered": true
+    },
+    {
+      "employee_sid": "EMP003",
+      "phone_number": "+918888888888",
+      "name": "Arjun Kapoor",
+      "home_area": "Thane",
+      "home_address": "Thane West, Mumbai - 400601",
+      "assigned_routes": ["RT004"],
+      "registered": true
+    }
+  ]
+}

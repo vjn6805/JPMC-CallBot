@@ -1,0 +1,66 @@
+{
+  "routes": [
+    {
+      "route_id": "RT001",
+      "route_name": "Powai Express",
+      "area": "Powai",
+      "pickup_point": "Powai Lake Bus Stop, Powai",
+      "drop_point": "JPMC Office, BKC",
+      "total_seats": 20,
+      "timings": [
+        { "timing_id": "RT001-T1", "departure_time": "07:30", "arrival_time": "08:45" },
+        { "timing_id": "RT001-T2", "departure_time": "08:30", "arrival_time": "09:45" },
+        { "timing_id": "RT001-T3", "departure_time": "09:30", "arrival_time": "10:45" },
+        { "timing_id": "RT001-T4", "departure_time": "17:00", "arrival_time": "18:15" },
+        { "timing_id": "RT001-T5", "departure_time": "18:30", "arrival_time": "19:45" },
+        { "timing_id": "RT001-T6", "departure_time": "20:00", "arrival_time": "21:15" }
+      ]
+    },
+    {
+      "route_id": "RT002",
+      "route_name": "Andheri Connect",
+      "area": "Andheri",
+      "pickup_point": "Andheri Metro Station, Gate 2",
+      "drop_point": "JPMC Office, BKC",
+      "total_seats": 25,
+      "timings": [
+        { "timing_id": "RT002-T1", "departure_time": "07:00", "arrival_time": "08:00" },
+        { "timing_id": "RT002-T2", "departure_time": "08:00", "arrival_time": "09:00" },
+        { "timing_id": "RT002-T3", "departure_time": "09:00", "arrival_time": "10:00" },
+        { "timing_id": "RT002-T4", "departure_time": "17:30", "arrival_time": "18:30" },
+        { "timing_id": "RT002-T5", "departure_time": "19:00", "arrival_time": "20:00" },
+        { "timing_id": "RT002-T6", "departure_time": "21:00", "arrival_time": "22:00" }
+      ]
+    },
+    {
+      "route_id": "RT003",
+      "route_name": "Powai Late",
+      "area": "Powai",
+      "pickup_point": "Hiranandani Gardens Bus Stop, Powai",
+      "drop_point": "JPMC Office, BKC",
+      "total_seats": 15,
+      "timings": [
+        { "timing_id": "RT003-T1", "departure_time": "10:00", "arrival_time": "11:15" },
+        { "timing_id": "RT003-T2", "departure_time": "11:00", "arrival_time": "12:15" },
+        { "timing_id": "RT003-T3", "departure_time": "20:30", "arrival_time": "21:45" },
+        { "timing_id": "RT003-T4", "departure_time": "22:00", "arrival_time": "23:15" }
+      ]
+    },
+    {
+      "route_id": "RT004",
+      "route_name": "Thane Direct",
+      "area": "Thane",
+      "pickup_point": "Thane Station, East Exit",
+      "drop_point": "JPMC Office, BKC",
+      "total_seats": 30,
+      "timings": [
+        { "timing_id": "RT004-T1", "departure_time": "07:00", "arrival_time": "08:30" },
+        { "timing_id": "RT004-T2", "departure_time": "08:30", "arrival_time": "10:00" },
+        { "timing_id": "RT004-T3", "departure_time": "10:00", "arrival_time": "11:30" },
+        { "timing_id": "RT004-T4", "departure_time": "17:00", "arrival_time": "18:30" },
+        { "timing_id": "RT004-T5", "departure_time": "19:30", "arrival_time": "21:00" },
+        { "timing_id": "RT004-T6", "departure_time": "21:30", "arrival_time": "23:00" }
+      ]
+    }
+  ]
+}

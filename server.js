@@ -93,6 +93,9 @@ app.use('/rag', ragRoutes);
 const foodRoutes = require('./routes/food');
 app.use('/food', foodRoutes);
 
+const shuttleRoutes = require('./routes/shuttle');
+app.use('/shuttle', shuttleRoutes);
+
 // ─────────────────────────────────────────────
 // ROUTE 1: Twilio incoming call
 // Phase 1 auth + hand off to vAPI

@@ -43,7 +43,16 @@ FOR COMPANY KNOWLEDGE / POLICY QUESTIONS:
 - After answering, mention 1-2 related things they might want to know
 - If user asks what you can help with → call list_knowledge_topics
 
-FOR FOOD ORDERING:
+FOR SHUTTLE BOOKING:
+- Call get_available_shuttles first with the travel date
+- If result contains "NOT_REGISTERED" → tell them to register at go.jpmc.com/transport and end that topic
+- If shuttles are available → read out options clearly one by one with departure time and pickup point
+- After user picks an option → confirm the details and call book_shuttle
+- For cancellation → ask for booking ID → call cancel_shuttle
+- Remind user: bookings must be made 6 hours before departure, cancellations 1 hour before
+- For listing bookings → call my_shuttle_bookings
+
+
 - When user asks about food, what to eat, or a cuisine → call search_food with their query
 - Results are prioritised for their building automatically
 - Suggest the outlet and top 3 items with prices
@@ -196,6 +205,62 @@ RULES:
             parameters: { type: "object", properties: {}, required: [] }
           },
           server: { url: `${SERVER_URL}/meetingroom/my-bookings` }
+        },
+        // ── Shuttle Booking Tools ──
+        {
+          type: "function",
+          function: {
+            name: "get_available_shuttles",
+            description: "Check if employee is registered on GoMyTransport and get available shuttle options for a travel date. Always call this first for any shuttle related request.",
+            parameters: {
+              type: "object",
+              properties: {
+                travel_date: { type: "string", description: "Travel date in YYYY-MM-DD format" }
+              },
+              required: ["travel_date"]
+            }
+          },
+          server: { url: `${SERVER_URL}/shuttle/available` }
+        },
+        {
+          type: "function",
+          function: {
+            name: "book_shuttle",
+            description: "Book a shuttle seat after user selects a timing. Only call after get_available_shuttles and user confirms their choice.",
+            parameters: {
+              type: "object",
+              properties: {
+                timing_id: { type: "string", description: "The timing ID like RT001-T2" },
+                travel_date: { type: "string", description: "Travel date in YYYY-MM-DD format" }
+              },
+              required: ["timing_id", "travel_date"]
+            }
+          },
+          server: { url: `${SERVER_URL}/shuttle/book` }
+        },
+        {
+          type: "function",
+          function: {
+            name: "cancel_shuttle",
+            description: "Cancel an existing shuttle booking. Cancellation must be at least 1 hour before departure.",
+            parameters: {
+              type: "object",
+              properties: {
+                booking_id: { type: "string", description: "Shuttle booking ID like JPMC-SH-5001" }
+              },
+              required: ["booking_id"]
+            }
+          },
+          server: { url: `${SERVER_URL}/shuttle/cancel` }
+        },
+        {
+          type: "function",
+          function: {
+            name: "my_shuttle_bookings",
+            description: "List all upcoming confirmed shuttle bookings for the caller",
+            parameters: { type: "object", properties: {}, required: [] }
+          },
+          server: { url: `${SERVER_URL}/shuttle/my-bookings` }
         },
         // ── Food Ordering Tools ──
         {

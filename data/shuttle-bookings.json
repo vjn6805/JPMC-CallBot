@@ -1,0 +1,21 @@
+{
+  "bookings": [
+    {
+      "booking_id": "JPMC-SH-5001",
+      "employee_sid": "EMP001",
+      "employee_name": "Veer Jain",
+      "phone_number": "+917485963139",
+      "route_id": "RT001",
+      "route_name": "Powai Express",
+      "timing_id": "RT001-T1",
+      "pickup_point": "Powai Lake Bus Stop, Powai",
+      "departure_time": "07:30",
+      "arrival_time": "08:45",
+      "travel_date": "2026-06-10",
+      "status": "CANCELLED",
+      "booked_at": "2026-06-09T18:50:42.401Z",
+      "cancelled_at": "2026-06-09T18:51:17.634Z"
+    }
+  ],
+  "last_booking_id": 5001
+}
