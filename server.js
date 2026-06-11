@@ -237,9 +237,72 @@ app.post('/call/twiml', (req, res) => {
 });
 
 
-// Use these to build your dashboard / frontend
+// ─────────────────────────────────────────────
+// EMPLOYEE PORTAL API
 // ─────────────────────────────────────────────
 const { Ticket, RoomBooking, FoodOrder, ShuttleBooking } = require('./models');
+
+// Login — verify phone number against employees.json
+app.post('/employee/login', (req, res) => {
+  const { phone } = req.body;
+  if (!phone) return res.status(400).json({ error: 'Phone required' });
+  const employee = employees[phone];
+  if (!employee) return res.status(401).json({ error: 'Number not registered with JPMC' });
+  res.json({ success: true, employee: { ...employee, phone } });
+});
+
+// All data for one employee
+app.get('/employee/my-data', async (req, res) => {
+  const phone = req.query.phone;
+  if (!phone) return res.status(400).json({ error: 'Phone required' });
+  const employee = employees[phone];
+  if (!employee) return res.status(401).json({ error: 'Unauthorized' });
+
+  const [tickets, rooms, food, shuttles] = await Promise.all([
+    Ticket.find({ phone_number: phone }).sort({ raised_at: -1 }),
+    RoomBooking.find({ phone_number: phone }).sort({ booked_at: -1 }),
+    FoodOrder.find({ phone_number: phone }).sort({ ordered_at: -1 }),
+    ShuttleBooking.find({ phone_number: phone }).sort({ booked_at: -1 }),
+  ]);
+  res.json({ tickets, rooms, food, shuttles });
+});
+
+// Cancel room booking
+app.post('/employee/cancel/room', async (req, res) => {
+  const { phone, booking_id } = req.body;
+  const employee = employees[phone];
+  if (!employee) return res.status(401).json({ error: 'Unauthorized' });
+
+  const booking = await RoomBooking.findOne({ booking_id });
+  if (!booking)                        return res.status(404).json({ error: 'Booking not found' });
+  if (booking.phone_number !== phone)  return res.status(403).json({ error: 'Not your booking' });
+  if (booking.status === 'CANCELLED')  return res.status(400).json({ error: 'Already cancelled' });
+
+  booking.status = 'CANCELLED';
+  booking.cancelled_at = new Date();
+  await booking.save();
+  res.json({ success: true });
+});
+
+// Cancel shuttle booking
+app.post('/employee/cancel/shuttle', async (req, res) => {
+  const { phone, booking_id } = req.body;
+  const employee = employees[phone];
+  if (!employee) return res.status(401).json({ error: 'Unauthorized' });
+
+  const booking = await ShuttleBooking.findOne({ booking_id });
+  if (!booking)                        return res.status(404).json({ error: 'Booking not found' });
+  if (booking.phone_number !== phone)  return res.status(403).json({ error: 'Not your booking' });
+  if (booking.status === 'CANCELLED')  return res.status(400).json({ error: 'Already cancelled' });
+
+  booking.status = 'CANCELLED';
+  booking.cancelled_at = new Date();
+  await booking.save();
+  res.json({ success: true });
+});
+
+// Use these to build your dashboard / frontend
+// ─────────────────────────────────────────────
 
 app.get('/api/tickets',          async (req, res) => { res.json(await Ticket.find().sort({ raised_at: -1 })); });
 app.get('/api/room-bookings',    async (req, res) => { res.json(await RoomBooking.find().sort({ booked_at: -1 })); });

@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg:          #F4F6F9; /* Warm, rich off-white/light gray */
+  --bg-2:        #FFFFFF; /* Pure white cards and panels */
+  --bg-3:        #E9EDF2; /* Soft grey for table headers / inputs */
+  --border:      #E2E8F0; /* Soft border */
+  --border-2:    #CBD5E1; /* Secondary border */
+  --text:        #1A253C; /* Deep slate/navy for extreme readability */
+  --text-2:      #4A5568; /* Slate gray */
+  --text-3:      #718096; /* Muted slate */
+  
+  /* JPMC Specific Brand Colors */
+  --jpm-navy:    #1B365D; /* Chase Deep Navy */
+  --jpm-gold:    #A18A4F; /* Chase Gold/Bronze */
+  
+  /* Interactive Accent Colors */
+  --blue:        #1B365D; /* primary blue */
+  --blue-dim:    rgba(27, 54, 93, 0.06);
+  --green:       #1B4D3E; /* Forest Green for corporate success */
+  --green-dim:   rgba(27, 77, 62, 0.06);
+  --yellow:      #8C773E; /* Warm Gold for alerts */
+  --yellow-dim:  rgba(140, 119, 62, 0.06);
+  --red:         #9E2A2B; /* Deep Red for cancellations */
+  --red-dim:     rgba(158, 42, 43, 0.06);
+  --purple:      #4A3B6B; /* Royal Purple */
+  --purple-dim:  rgba(74, 59, 107, 0.06);
+  
+  --font:        'Plus Jakarta Sans', sans-serif;
+  --font-serif:  'Cormorant Garamond', serif;
+  --mono:        'JetBrains Mono', monospace;
+}
+
+html, body, #root {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+button { font-family: var(--font); cursor: pointer; }
+input  { font-family: var(--font); }
+code   { font-family: var(--mono); }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
+
