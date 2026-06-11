@@ -2,91 +2,106 @@
   "outlets": [
     {
       "outlet_id": "OUT001",
-      "name": "The Thali House",
+      "name": "Kitchen Exchange",
       "building": "Tower A",
       "floor": 2,
-      "cuisine_tags": ["thali", "indian", "veg", "dal", "roti", "rice", "sabzi"],
-      "timings": "12:00 PM - 3:00 PM",
+      "cuisine_tags": ["continental", "western", "pasta", "burgers", "non-vegetarian", "vegetarian"],
+      "timings": "Monday-Friday",
       "menu": [
-        { "item_id": "TH001", "name": "Veg Thali", "price": 120, "description": "Dal, 2 sabzi, rice, roti, salad, papad", "veg": true },
-        { "item_id": "TH002", "name": "Special Thali", "price": 150, "description": "Dal makhani, paneer, rice, 3 rotis, raita, dessert", "veg": true },
-        { "item_id": "TH003", "name": "Mini Thali", "price": 80, "description": "Dal, 1 sabzi, rice, 2 rotis", "veg": true }
+        { "item_id": "ITEM415542", "name": "Chicken Solanki with Mediterranean Veggie Pilaf", "price": 180, "description": "Grilled chicken with aromatic pilaf rice and harissa sauce", "veg": false },
+        { "item_id": "ITEM415543", "name": "Cottage Cheese Solanki with Mediterranean Veggie Pilaf", "price": 150, "description": "Pan-seared cottage cheese with aromatic pilaf rice and harissa", "veg": true },
+        { "item_id": "ITEM415546", "name": "Herb Tossed Penne with Chicken Ratatouille", "price": 170, "description": "Penne pasta with chicken ratatouille and cilantro pesto crisps", "veg": false },
+        { "item_id": "ITEM415547", "name": "Herb Tossed Penne with Classic Ratatouille", "price": 140, "description": "Penne pasta with classic vegetable ratatouille and cilantro pesto crisps", "veg": true },
+        { "item_id": "ITEM415554", "name": "Buttermilk Fried Chicken Burger", "price": 190, "description": "Crispy fried chicken burger with peri peri mayo, pickled cucumber and caramelized onion fries", "veg": false },
+        { "item_id": "ITEM415555", "name": "Cheese Vegetable Burger", "price": 150, "description": "Cheese and veggie burger with peri peri mayo, pickled cucumber and caramelized onion fries", "veg": true },
+        { "item_id": "ITEM415558", "name": "Ragu Chicken & Amatriciana Pasta", "price": 175, "description": "Slow-cooked chicken ragu with amatriciana pasta and herbed garlic bread", "veg": false },
+        { "item_id": "ITEM415561", "name": "Exotic Vegetable & Amatriciana Pasta", "price": 145, "description": "Exotic vegetables in amatriciana sauce with herbed garlic bread", "veg": true }
       ]
     },
     {
       "outlet_id": "OUT002",
-      "name": "Dragon Wok",
+      "name": "Street Bites",
       "building": "Tower A",
-      "floor": 3,
-      "cuisine_tags": ["chinese", "noodles", "fried rice", "manchurian", "momos", "wok", "asian"],
-      "timings": "12:00 PM - 3:30 PM",
+      "floor": 1,
+      "cuisine_tags": ["chaat", "indian street food", "vegetarian", "snacks"],
+      "timings": "Monday-Friday",
       "menu": [
-        { "item_id": "DW001", "name": "Veg Fried Rice", "price": 110, "description": "Wok tossed rice with vegetables and soy sauce", "veg": true },
-        { "item_id": "DW002", "name": "Chicken Fried Rice", "price": 140, "description": "Wok tossed rice with chicken and egg", "veg": false },
-        { "item_id": "DW003", "name": "Veg Hakka Noodles", "price": 100, "description": "Stir fried noodles with mixed vegetables", "veg": true },
-        { "item_id": "DW004", "name": "Veg Manchurian + Rice", "price": 130, "description": "Crispy veg balls in manchurian gravy with fried rice", "veg": true },
-        { "item_id": "DW005", "name": "Steamed Momos (6 pcs)", "price": 90, "description": "Steamed dumplings with chilli sauce", "veg": true },
-        { "item_id": "DW006", "name": "Chicken Momos (6 pcs)", "price": 110, "description": "Steamed chicken dumplings with chilli sauce", "veg": false }
+        { "item_id": "ITEM367523", "name": "Dahi Vada", "price": 60, "description": "Soft lentil dumplings soaked in sweetened yogurt with tamarind and mint chutney", "veg": true },
+        { "item_id": "ITEM367524", "name": "Dahi Kachori", "price": 65, "description": "Crispy kachori topped with yogurt, chutneys and sev", "veg": true },
+        { "item_id": "ITEM367525", "name": "Poha Bhel", "price": 50, "description": "Flattened rice mixed with puffed rice, onion, tomato, and tangy chutneys", "veg": true },
+        { "item_id": "ITEM367526", "name": "Dahi Puri", "price": 60, "description": "Crispy puris filled with potato, yogurt, tamarind and mint chutney", "veg": true },
+        { "item_id": "ITEM367528", "name": "Steamed Sweet Corn Chaat", "price": 55, "description": "Steamed corn kernels tossed with spices, lemon, and chaat masala", "veg": true },
+        { "item_id": "ITEM367529", "name": "Cocktail Samosa Chaat", "price": 70, "description": "Mini samosas topped with chole, yogurt, and chutneys", "veg": true },
+        { "item_id": "ITEM367533", "name": "Bhel Puri", "price": 55, "description": "Puffed rice with onions, tomatoes, and tangy tamarind chutney", "veg": true },
+        { "item_id": "ITEM367545", "name": "Aloo Tikki Chaat", "price": 70, "description": "Crispy potato patties topped with chole, yogurt, and chutneys", "veg": true }
       ]
     },
     {
       "outlet_id": "OUT003",
-      "name": "Brew & Bites",
-      "building": "Tower A",
-      "floor": 5,
-      "cuisine_tags": ["beverages", "coffee", "tea", "juice", "smoothie", "snacks", "sandwich", "drinks"],
-      "timings": "8:00 AM - 6:00 PM",
+      "name": "The Thali House",
+      "building": "Tower B",
+      "floor": 2,
+      "cuisine_tags": ["thali", "north indian", "dal", "roti", "rice", "vegetarian"],
+      "timings": "Monday-Friday",
       "menu": [
-        { "item_id": "BB001", "name": "Cappuccino", "price": 60, "description": "Espresso with steamed milk foam", "veg": true },
-        { "item_id": "BB002", "name": "Cold Coffee", "price": 70, "description": "Chilled coffee with milk and ice", "veg": true },
-        { "item_id": "BB003", "name": "Masala Chai", "price": 30, "description": "Traditional Indian spiced tea", "veg": true },
-        { "item_id": "BB004", "name": "Fresh Lime Soda", "price": 40, "description": "Lime juice with soda, sweet or salted", "veg": true },
-        { "item_id": "BB005", "name": "Veg Club Sandwich", "price": 90, "description": "Grilled sandwich with cheese, veggies, and mayo", "veg": true },
-        { "item_id": "BB006", "name": "Banana Smoothie", "price": 80, "description": "Fresh banana blended with milk and honey", "veg": true }
+        { "item_id": "ITEM901001", "name": "Veg Thali", "price": 120, "description": "Dal, 2 sabzi, steamed rice, 2 rotis, salad and papad", "veg": true },
+        { "item_id": "ITEM901002", "name": "Special Thali", "price": 155, "description": "Dal makhani, paneer curry, rice, 3 butter rotis, raita and gulab jamun", "veg": true },
+        { "item_id": "ITEM901003", "name": "Mini Thali", "price": 85, "description": "Dal, 1 sabzi, steamed rice and 2 rotis", "veg": true },
+        { "item_id": "ITEM901004", "name": "Non-Veg Thali", "price": 175, "description": "Chicken curry, dal, rice, 3 rotis, raita and pickle", "veg": false },
+        { "item_id": "ITEM901005", "name": "Paneer Butter Masala + Roti", "price": 130, "description": "Creamy paneer curry served with 3 butter rotis", "veg": true },
+        { "item_id": "ITEM901006", "name": "Dal Fry + Rice", "price": 100, "description": "Tempered yellow dal served with steamed basmati rice", "veg": true }
       ]
     },
     {
       "outlet_id": "OUT004",
-      "name": "Cerealicious",
+      "name": "Dragon Wok",
       "building": "Tower B",
-      "floor": 2,
-      "cuisine_tags": ["cereal", "breakfast", "oats", "muesli", "granola", "healthy", "cornflakes", "milk"],
-      "timings": "8:00 AM - 11:00 AM",
+      "floor": 3,
+      "cuisine_tags": ["chinese", "asian", "noodles", "fried rice", "momos", "manchurian"],
+      "timings": "Monday-Friday",
       "menu": [
-        { "item_id": "CE001", "name": "Classic Cornflakes", "price": 60, "description": "Cornflakes with cold milk and sugar", "veg": true },
-        { "item_id": "CE002", "name": "Oats Bowl", "price": 70, "description": "Cooked oats with banana, honey, and nuts", "veg": true },
-        { "item_id": "CE003", "name": "Muesli Parfait", "price": 90, "description": "Muesli layered with yogurt and fresh fruits", "veg": true },
-        { "item_id": "CE004", "name": "Granola Bowl", "price": 85, "description": "Granola with almond milk and berries", "veg": true }
+        { "item_id": "ITEM902001", "name": "Veg Fried Rice", "price": 110, "description": "Wok-tossed rice with mixed vegetables and soy sauce", "veg": true },
+        { "item_id": "ITEM902002", "name": "Chicken Fried Rice", "price": 145, "description": "Wok-tossed rice with chicken strips and egg", "veg": false },
+        { "item_id": "ITEM902003", "name": "Veg Hakka Noodles", "price": 100, "description": "Stir-fried hakka noodles with mixed vegetables", "veg": true },
+        { "item_id": "ITEM902004", "name": "Chicken Hakka Noodles", "price": 135, "description": "Stir-fried hakka noodles with shredded chicken", "veg": false },
+        { "item_id": "ITEM902005", "name": "Veg Manchurian + Rice", "price": 130, "description": "Crispy veg balls in manchurian gravy served with fried rice", "veg": true },
+        { "item_id": "ITEM902006", "name": "Steamed Momos (6 pcs)", "price": 90, "description": "Steamed dumplings with spicy chilli sauce", "veg": true },
+        { "item_id": "ITEM902007", "name": "Chicken Momos (6 pcs)", "price": 115, "description": "Steamed chicken dumplings with chilli garlic sauce", "veg": false },
+        { "item_id": "ITEM902008", "name": "Hot and Sour Soup", "price": 80, "description": "Classic Chinese hot and sour vegetable soup", "veg": true }
       ]
     },
     {
       "outlet_id": "OUT005",
-      "name": "Curry Express",
+      "name": "Brew & Bites",
       "building": "Tower B",
-      "floor": 4,
-      "cuisine_tags": ["indian", "curry", "biryani", "rice", "chicken", "paneer", "dal", "north indian"],
-      "timings": "12:00 PM - 3:00 PM",
+      "floor": 5,
+      "cuisine_tags": ["beverages", "coffee", "tea", "juice", "smoothie", "sandwiches", "snacks"],
+      "timings": "Monday-Friday",
       "menu": [
-        { "item_id": "CX001", "name": "Chicken Biryani", "price": 160, "description": "Aromatic basmati rice with spiced chicken", "veg": false },
-        { "item_id": "CX002", "name": "Veg Biryani", "price": 120, "description": "Basmati rice with mixed vegetables and spices", "veg": true },
-        { "item_id": "CX003", "name": "Paneer Butter Masala + Roti", "price": 130, "description": "Creamy paneer curry with 3 butter rotis", "veg": true },
-        { "item_id": "CX004", "name": "Dal Fry + Rice", "price": 100, "description": "Tempered yellow dal with steamed rice", "veg": true },
-        { "item_id": "CX005", "name": "Egg Curry + Rice", "price": 110, "description": "Spiced egg curry with steamed rice", "veg": false }
+        { "item_id": "ITEM903001", "name": "Cappuccino", "price": 65, "description": "Espresso with steamed milk and thick foam", "veg": true },
+        { "item_id": "ITEM903002", "name": "Cold Coffee", "price": 75, "description": "Chilled blended coffee with milk and ice", "veg": true },
+        { "item_id": "ITEM903003", "name": "Masala Chai", "price": 30, "description": "Traditional Indian spiced tea with ginger and cardamom", "veg": true },
+        { "item_id": "ITEM903004", "name": "Fresh Lime Soda", "price": 40, "description": "Lime juice with soda, available sweet or salted", "veg": true },
+        { "item_id": "ITEM903005", "name": "Veg Club Sandwich", "price": 95, "description": "Grilled triple-decker sandwich with cheese, veggies and mayo", "veg": true },
+        { "item_id": "ITEM903006", "name": "Chicken Club Sandwich", "price": 125, "description": "Grilled triple-decker sandwich with grilled chicken, cheese and mayo", "veg": false },
+        { "item_id": "ITEM903007", "name": "Banana Smoothie", "price": 85, "description": "Fresh banana blended with milk, honey and a hint of vanilla", "veg": true },
+        { "item_id": "ITEM903008", "name": "Mixed Fruit Juice", "price": 70, "description": "Freshly pressed seasonal fruit juice", "veg": true }
       ]
     },
     {
       "outlet_id": "OUT006",
-      "name": "Noodle Street",
-      "building": "Tower B",
-      "floor": 6,
-      "cuisine_tags": ["chinese", "noodles", "soup", "asian", "thai", "rice", "wok", "ramen"],
-      "timings": "11:30 AM - 4:00 PM",
+      "name": "Spice Route",
+      "building": "Tower C",
+      "floor": 1,
+      "cuisine_tags": ["south indian", "dosa", "idli", "vada", "sambar", "breakfast"],
+      "timings": "Monday-Friday",
       "menu": [
-        { "item_id": "NS001", "name": "Veg Ramen", "price": 130, "description": "Japanese style noodle soup with vegetables", "veg": true },
-        { "item_id": "NS002", "name": "Chicken Ramen", "price": 160, "description": "Japanese style noodle soup with chicken", "veg": false },
-        { "item_id": "NS003", "name": "Pad Thai Noodles", "price": 140, "description": "Thai style stir fried noodles with peanuts", "veg": true },
-        { "item_id": "NS004", "name": "Hot and Sour Soup", "price": 80, "description": "Classic Chinese hot and sour vegetable soup", "veg": true },
-        { "item_id": "NS005", "name": "Spring Rolls (4 pcs)", "price": 90, "description": "Crispy fried rolls with vegetable filling", "veg": true }
+        { "item_id": "ITEM904001", "name": "Masala Dosa", "price": 80, "description": "Crispy dosa with spiced potato filling, sambar and coconut chutney", "veg": true },
+        { "item_id": "ITEM904002", "name": "Idli Vada Combo", "price": 70, "description": "2 soft idlis and 1 crispy vada with sambar and coconut chutney", "veg": true },
+        { "item_id": "ITEM904003", "name": "Rava Upma", "price": 60, "description": "Semolina cooked with vegetables, curry leaves and mustard seeds", "veg": true },
+        { "item_id": "ITEM904004", "name": "Uttapam", "price": 85, "description": "Thick rice pancake topped with onion, tomato, and green chilli", "veg": true },
+        { "item_id": "ITEM904005", "name": "South Indian Thali", "price": 135, "description": "Rice, sambar, rasam, 2 curries, papad and pickle", "veg": true },
+        { "item_id": "ITEM904006", "name": "Egg Dosa", "price": 95, "description": "Crispy dosa with egg filling, sambar and chutney", "veg": false }
       ]
     },
     {
@@ -94,27 +109,31 @@
       "name": "The Green Bowl",
       "building": "Tower C",
       "floor": 3,
-      "cuisine_tags": ["healthy", "salad", "veg", "wrap", "sandwich", "continental", "diet", "low calorie", "juice"],
-      "timings": "8:00 AM - 5:00 PM",
+      "cuisine_tags": ["healthy", "salad", "wrap", "continental", "diet", "low calorie", "juice"],
+      "timings": "Monday-Friday",
       "menu": [
-        { "item_id": "GB001", "name": "Caesar Salad", "price": 110, "description": "Romaine lettuce, croutons, parmesan with caesar dressing", "veg": true },
-        { "item_id": "GB002", "name": "Quinoa Power Bowl", "price": 130, "description": "Quinoa with roasted veggies, hummus and feta", "veg": true },
-        { "item_id": "GB003", "name": "Grilled Veg Wrap", "price": 100, "description": "Whole wheat wrap with grilled veggies and tzatziki", "veg": true },
-        { "item_id": "GB004", "name": "Detox Juice", "price": 70, "description": "Spinach, cucumber, ginger, apple cold pressed juice", "veg": true }
+        { "item_id": "ITEM905001", "name": "Caesar Salad", "price": 110, "description": "Romaine lettuce, croutons and parmesan with caesar dressing", "veg": true },
+        { "item_id": "ITEM905002", "name": "Quinoa Power Bowl", "price": 135, "description": "Quinoa with roasted veggies, hummus and feta cheese", "veg": true },
+        { "item_id": "ITEM905003", "name": "Grilled Chicken Salad", "price": 155, "description": "Grilled chicken breast over mixed greens with honey mustard dressing", "veg": false },
+        { "item_id": "ITEM905004", "name": "Grilled Veg Wrap", "price": 105, "description": "Whole wheat wrap with grilled veggies and tzatziki sauce", "veg": true },
+        { "item_id": "ITEM905005", "name": "Detox Juice", "price": 75, "description": "Spinach, cucumber, ginger and apple cold-pressed juice", "veg": true },
+        { "item_id": "ITEM905006", "name": "Avocado Toast", "price": 120, "description": "Multigrain toast with smashed avocado, cherry tomatoes and seasoning", "veg": true }
       ]
     },
     {
       "outlet_id": "OUT008",
-      "name": "Spice Route",
+      "name": "Curry Express",
       "building": "Tower C",
-      "floor": 5,
-      "cuisine_tags": ["indian", "south indian", "dosa", "idli", "vada", "thali", "sambar", "chutney"],
-      "timings": "8:00 AM - 3:00 PM",
+      "floor": 4,
+      "cuisine_tags": ["north indian", "biryani", "curry", "rice", "chicken", "paneer"],
+      "timings": "Monday-Friday",
       "menu": [
-        { "item_id": "SR001", "name": "Masala Dosa", "price": 80, "description": "Crispy dosa with spiced potato filling, sambar and chutney", "veg": true },
-        { "item_id": "SR002", "name": "Idli Vada Combo", "price": 70, "description": "2 idlis and 1 vada with sambar and coconut chutney", "veg": true },
-        { "item_id": "SR003", "name": "Rava Upma", "price": 60, "description": "Semolina cooked with vegetables and curry leaves", "veg": true },
-        { "item_id": "SR004", "name": "South Indian Thali", "price": 130, "description": "Rice, sambar, rasam, 2 curries, papad, pickle", "veg": true }
+        { "item_id": "ITEM906001", "name": "Chicken Biryani", "price": 165, "description": "Aromatic basmati rice slow-cooked with spiced chicken and fried onions", "veg": false },
+        { "item_id": "ITEM906002", "name": "Veg Biryani", "price": 125, "description": "Basmati rice cooked with mixed vegetables and whole spices", "veg": true },
+        { "item_id": "ITEM906003", "name": "Egg Curry + Rice", "price": 115, "description": "Spiced tomato-onion egg curry with steamed basmati rice", "veg": false },
+        { "item_id": "ITEM906004", "name": "Butter Chicken + Naan", "price": 185, "description": "Tender chicken in rich tomato-cream gravy with 2 butter naans", "veg": false },
+        { "item_id": "ITEM906005", "name": "Paneer Tikka Masala + Naan", "price": 155, "description": "Grilled paneer in spiced tomato gravy with 2 butter naans", "veg": true },
+        { "item_id": "ITEM906006", "name": "Mutton Rogan Josh + Rice", "price": 210, "description": "Kashmiri style slow-cooked mutton curry with steamed rice", "veg": false }
       ]
     }
   ]
