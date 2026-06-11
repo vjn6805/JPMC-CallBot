@@ -1,12 +1,15 @@
 const express   = require('express');
 const router    = express.Router();
 const twilio    = require('twilio');
+const Stripe    = require('stripe');
 const { FoodOrder } = require('../models');
 const outlets   = require('../data/food-outlets.json').outlets;
 const employees = require('../employees.json');
 const { sendFoodOrderEmail } = require('../utils/email');
 
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
 
 function getEmployeeByPhone(phone) { return phone ? (employees[phone] || null) : null; }
 
@@ -41,21 +44,46 @@ async function createOrder(outlet, orderedItems, phone, employee) {
   const totalAmount = orderedItems.reduce((sum, i) => sum + i.price, 0);
   const count       = await FoodOrder.countDocuments();
   const orderId     = `JPMC-FOOD-${3001 + count}`;
-  const paymentLink = `https://pay.jpmc-demo.com/order/${orderId}`;
+
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    mode: 'payment',
+    line_items: orderedItems.map(item => ({
+      price_data: {
+        currency: 'inr',
+        product_data: {
+          name: item.name,
+          description: item.description || `${item.name} from ${outlet.name}`
+        },
+        unit_amount: Math.round(item.price * 100)
+      },
+      quantity: 1
+    })),
+    customer_email: employee?.email,
+    metadata: {
+      order_id: orderId,
+      outlet_id: outlet.outlet_id,
+      employee_sid: employee?.sid || 'UNKNOWN'
+    },
+    success_url: `${baseUrl}/food/payment-success?session_id={CHECKOUT_SESSION_ID}&order_id=${orderId}`,
+    cancel_url: `${baseUrl}/food/payment-cancel?order_id=${orderId}`
+  });
+  const paymentLink = session.url;
 
   await FoodOrder.create({
-    order_id:      orderId,
-    outlet_id:     outlet.outlet_id,
-    outlet_name:   outlet.name,
-    building:      outlet.building,
-    floor:         outlet.floor,
-    employee_sid:  employee?.sid  || 'UNKNOWN',
-    employee_name: employee?.name || 'Unknown',
-    phone_number:  phone || 'Unknown',
-    items:         orderedItems.map(i => ({ item_id: i.item_id, name: i.name, price: i.price })),
-    total_amount:  totalAmount,
-    payment_link:  paymentLink,
-    status:        'PENDING_PAYMENT'
+    order_id:         orderId,
+    outlet_id:        outlet.outlet_id,
+    outlet_name:      outlet.name,
+    building:         outlet.building,
+    floor:            outlet.floor,
+    employee_sid:     employee?.sid  || 'UNKNOWN',
+    employee_name:    employee?.name || 'Unknown',
+    phone_number:     phone || 'Unknown',
+    items:            orderedItems.map(i => ({ item_id: i.item_id, name: i.name, price: i.price })),
+    total_amount:     totalAmount,
+    payment_link:     paymentLink,
+    stripe_session_id: session.id,
+    status:           'PENDING_PAYMENT'
   });
 
   const itemNames = orderedItems.map(i => i.name).join(', ');
@@ -245,6 +273,33 @@ router.post('/get-menu', (req, res) => {
   return vapiResponse(res, toolCallId,
     `Full menu for ${outlet.name}: ${menuText}. What would you like to order?`
   );
+});
+
+router.get('/payment-success', async (req, res) => {
+  const { order_id: orderId, session_id: sessionId } = req.query;
+  if (!orderId || !sessionId) {
+    return res.status(400).send('Missing order_id or session_id.');
+  }
+
+  try {
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    if (session.payment_status === 'paid') {
+      await FoodOrder.findOneAndUpdate(
+        { order_id: orderId, stripe_session_id: session.id },
+        { status: 'PAID' }
+      );
+      return res.send(`<h1>Payment successful</h1><p>Your order ${orderId} is now paid. Please collect your food from the outlet counter.</p>`);
+    }
+    return res.send('<h1>Payment pending</h1><p>We could not confirm payment yet. If your card was charged, wait a few moments and refresh this page.</p>');
+  } catch (err) {
+    console.error('Stripe payment-success error:', err.message);
+    return res.status(500).send('<h1>Error</h1><p>Unable to verify payment. Please try again later.</p>');
+  }
+});
+
+router.get('/payment-cancel', async (req, res) => {
+  const { order_id: orderId } = req.query;
+  return res.send(`<h1>Payment cancelled</h1><p>Your order ${orderId || ''} is still pending payment. Use the link in your SMS or email to try again.</p>`);
 });
 
 module.exports = router;

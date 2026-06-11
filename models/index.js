@@ -41,19 +41,20 @@ const roomBookingSchema = new mongoose.Schema({
 
 // ── Food Orders ──
 const foodOrderSchema = new mongoose.Schema({
-  order_id:      String,
-  outlet_id:     String,
-  outlet_name:   String,
-  building:      String,
-  floor:         Number,
-  employee_sid:  String,
-  employee_name: String,
-  phone_number:  String,
-  items:         [{ item_id: String, name: String, price: Number }],
-  total_amount:  Number,
-  payment_link:  String,
-  status:        { type: String, default: 'PENDING_PAYMENT' },
-  ordered_at:    { type: Date, default: Date.now }
+  order_id:         String,
+  outlet_id:        String,
+  outlet_name:      String,
+  building:         String,
+  floor:            Number,
+  employee_sid:     String,
+  employee_name:    String,
+  phone_number:     String,
+  items:            [{ item_id: String, name: String, price: Number }],
+  total_amount:     Number,
+  payment_link:     String,
+  stripe_session_id:String,
+  status:           { type: String, default: 'PENDING_PAYMENT' },
+  ordered_at:       { type: Date, default: Date.now }
 });
 
 // ── Shuttle Bookings ──
