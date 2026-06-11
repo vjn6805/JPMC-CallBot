@@ -53,13 +53,16 @@ FOR SHUTTLE BOOKING:
 - For listing bookings → call my_shuttle_bookings
 
 
-- When user asks about food, what to eat, or a cuisine → call search_food with their query
-- Results are prioritised for their building automatically
-- Suggest the outlet and top 3 items with prices
-- If user wants to see full menu → call get_menu
-- Only call place_food_order AFTER user confirms exactly what they want
-- After ordering, tell them the order ID and that an SMS with payment link has been sent
-- Never place an order without explicit user confirmation
+FOR FOOD ORDERING:
+- When user asks about food or cuisine → call search_food
+- search_food returns outlet_id and item_ids in the response — remember these
+- Read out the items and prices naturally to the user
+- Ask what they want to order
+- When user says what they want → call order_by_name with the outlet_id from search and the item names they said
+- order_by_name returns a confirmation summary with CONFIRM_ORDER — read it to the user and ask them to confirm
+- ONLY after user says YES → call place_food_order with the outlet_id and item_ids from the CONFIRM_ORDER response
+- After order placed → tell them order ID and that SMS with payment link is sent
+- Never place an order without user saying yes
 
 FOR MEETING ROOMS AND FOCUS ROOMS:
 - When user says "focus room" or "quiet room" or "solo room" → book a focus room (type: focus)
@@ -267,11 +270,11 @@ RULES:
           type: "function",
           function: {
             name: "search_food",
-            description: "Search for food outlets and menu items by cuisine type or dish name. Always call this first when user asks about food, what to eat, or a specific cuisine.",
+            description: "Search for food outlets and menu items by cuisine or dish name. Always call this first for food requests. Returns outlet_id and item_ids to use for ordering.",
             parameters: {
               type: "object",
               properties: {
-                query: { type: "string", description: "Cuisine or dish the employee is looking for, e.g. 'chinese', 'biryani', 'healthy', 'coffee'" }
+                query: { type: "string", description: "Cuisine or dish the employee wants, e.g. 'chinese', 'biryani', 'coffee'" }
               },
               required: ["query"]
             }
@@ -281,8 +284,40 @@ RULES:
         {
           type: "function",
           function: {
+            name: "order_by_name",
+            description: "Call this when user says what items they want to order. Pass the outlet_id from search_food and the item names as spoken by the user. Returns a confirmation summary before placing the order.",
+            parameters: {
+              type: "object",
+              properties: {
+                outlet_id: { type: "string", description: "outlet_id from the search_food result, e.g. OUT002" },
+                item_names: { type: "array", items: { type: "string" }, description: "Item names as spoken by user e.g. ['fried rice', 'momos']" }
+              },
+              required: ["outlet_id", "item_names"]
+            }
+          },
+          server: { url: `${SERVER_URL}/food/order-by-name` }
+        },
+        {
+          type: "function",
+          function: {
+            name: "place_food_order",
+            description: "Place the final confirmed food order. Only call this AFTER user says yes to the confirmation from order_by_name. Use outlet_id and item_ids from the CONFIRM_ORDER response.",
+            parameters: {
+              type: "object",
+              properties: {
+                outlet_id: { type: "string", description: "outlet_id from CONFIRM_ORDER response" },
+                item_ids:  { type: "array", items: { type: "string" }, description: "item_ids from CONFIRM_ORDER response e.g. ['DW001','DW005']" }
+              },
+              required: ["outlet_id", "item_ids"]
+            }
+          },
+          server: { url: `${SERVER_URL}/food/place-order` }
+        },
+        {
+          type: "function",
+          function: {
             name: "get_menu",
-            description: "Get the full menu of a specific outlet by outlet_id before placing an order",
+            description: "Get the full menu of a specific outlet by outlet_id",
             parameters: {
               type: "object",
               properties: {
@@ -292,22 +327,6 @@ RULES:
             }
           },
           server: { url: `${SERVER_URL}/food/get-menu` }
-        },
-        {
-          type: "function",
-          function: {
-            name: "place_food_order",
-            description: "Place a food order after user confirms the items. Sends SMS confirmation with payment link.",
-            parameters: {
-              type: "object",
-              properties: {
-                outlet_id: { type: "string", description: "The outlet ID like OUT001" },
-                item_ids: { type: "array", items: { type: "string" }, description: "List of item IDs to order, e.g. ['DW001', 'DW003']" }
-              },
-              required: ["outlet_id", "item_ids"]
-            }
-          },
-          server: { url: `${SERVER_URL}/food/place-order` }
         },
         {
           type: "function",
