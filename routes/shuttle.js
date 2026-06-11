@@ -128,13 +128,13 @@ router.post('/available', async (req, res) => {
   availableOptions.sort((a, b) => toMinutes(a.departure_time) - toMinutes(b.departure_time));
 
   const optionsList = availableOptions.map((o, i) =>
-    `Option ${i + 1}: ${o.route_name}, departing ${o.departure_time} from ${o.pickup_point}, arrives JPMC by ${o.arrival_time}, ${o.available_seats} seats left`
+    `Option ${i + 1}: timing_id=${o.timing_id}, ${o.route_name}, departing ${o.departure_time} from ${o.pickup_point}, arrives JPMC by ${o.arrival_time}, ${o.available_seats} seats left`
   ).join('. ');
 
   return vapiResponse(res, toolCallId,
     `You are registered from ${registration.home_area}. ` +
-    `Here are the available shuttles for ${travel_date}: ${optionsList}. ` +
-    `Which option would you like? Just say the option number or departure time.`
+    `Available shuttles for ${travel_date}: ${optionsList}. ` +
+    `To book, tell me which option you want and I will use the timing_id to book it for you.`
   );
 });
 
@@ -157,16 +157,39 @@ router.post('/book', async (req, res) => {
     return vapiResponse(res, toolCallId, 'You are not registered on GoMyTransport. Please register first.');
   }
 
-  // Find route and timing
+  // Find route and timing — try timing_id first, fallback to departure time string
   let foundRoute = null, foundTiming = null;
   for (const route of schedules) {
-    const timing = route.timings.find(t => t.timing_id === timing_id);
+    // Match by exact timing_id OR by departure time (fallback when LLM passes time instead of ID)
+    const timing = route.timings.find(t =>
+      t.timing_id === timing_id ||
+      t.departure_time === timing_id ||
+      t.departure_time.replace(':', '') === timing_id.replace(':', '')
+    );
     if (timing) { foundRoute = route; foundTiming = timing; break; }
   }
 
+  // Also try matching across only the employee's assigned routes
+  if (!foundRoute) {
+    const assigned = schedules.filter(r => registration.assigned_routes.includes(r.route_id));
+    for (const route of assigned) {
+      const timing = route.timings.find(t =>
+        t.timing_id === timing_id ||
+        t.departure_time === timing_id ||
+        t.departure_time.replace(':', '') === timing_id.replace(':', '')
+      );
+      if (timing) { foundRoute = route; foundTiming = timing; break; }
+    }
+  }
+
   if (!foundRoute || !foundTiming) {
+    // List available timings so LLM can retry with correct ID
+    const assigned = schedules.filter(r => registration.assigned_routes.includes(r.route_id));
+    const timingList = assigned.flatMap(r =>
+      r.timings.map(t => `${t.timing_id} (${t.departure_time})`)
+    ).join(', ');
     return vapiResponse(res, toolCallId,
-      'I could not find that shuttle timing. Please say the option number from the list I gave you.'
+      `I could not match that shuttle. Available timing IDs for your route are: ${timingList}. Please try again with the correct timing ID.`
     );
   }
 
