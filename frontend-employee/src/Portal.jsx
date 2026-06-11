@@ -30,7 +30,7 @@ function CancelBtn({ onClick, disabled }) {
   )
 }
 
-export default function Portal({ employee, onLogout }) {
+export default function Portal({ employee }) {
   const [tab,     setTab]     = useState('tickets')
   const [data,    setData]    = useState({ tickets: [], rooms: [], food: [], shuttles: [] })
   const [loading, setLoading] = useState(true)
@@ -91,7 +91,7 @@ export default function Portal({ employee, onLogout }) {
             <span>{employee.name}</span>
             <span className={s.empSid}>{employee.sid}</span>
           </div>
-          <button className={s.logoutBtn} onClick={onLogout}>Sign out</button>
+
         </div>
       </header>
 
