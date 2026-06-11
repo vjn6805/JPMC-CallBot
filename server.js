@@ -35,6 +35,9 @@ for (const [filePath, defaultContent] of Object.entries(dataDefaults)) {
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+// Serve frontend
+app.use(express.static(path.join(__dirname, 'public')));
+
 
 
 const employees = require('./employees.json');
@@ -169,7 +172,59 @@ app.post('/incoming-call', (req, res) => {
 });
 
 // ─────────────────────────────────────────────
-// FRONTEND DATA APIs — accessible from anywhere
+// OUTBOUND CALL: frontend button triggers this
+// Twilio calls the user, then connects to vAPI
+// ─────────────────────────────────────────────
+const twilio = require('twilio');
+const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+
+app.post('/call/outbound', async (req, res) => {
+  const { to } = req.body;
+
+  if (!to) return res.status(400).json({ success: false, error: 'Phone number required' });
+
+  // Check if number is registered before placing call
+  const employee = employees[to];
+  if (!employee) {
+    return res.status(403).json({ success: false, error: 'This number is not registered with JPMC.' });
+  }
+
+  try {
+    const call = await twilioClient.calls.create({
+      to,
+      from: process.env.TWILIO_PHONE_NUMBER,
+      // Point to your vAPI auth hook so auth still runs normally
+      url: `${process.env.SERVER_URL}/call/twiml?to=${encodeURIComponent(to)}`
+    });
+
+    console.log(`📞 Outbound call initiated to ${to}: ${call.sid}`);
+    res.json({ success: true, call_sid: call.sid });
+  } catch (err) {
+    console.error('Outbound call failed:', err.message);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// TwiML for outbound call — connects to vAPI the same way as inbound
+app.post('/call/twiml', (req, res) => {
+  const vapiAssistantId = process.env.VAPI_ASSISTANT_ID;
+  const to = req.query.to || req.body.To;
+  const employee = employees[to] || {};
+
+  const twiml = `<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Connect>
+    <Stream url="wss://api.vapi.ai/twilio">
+      <Parameter name="assistantId" value="${vapiAssistantId}"/>
+      <Parameter name="assistantOverrides" value='{"firstMessage":"Hello ${employee.name || 'there'}! I am Alex from JPMC. Your identity has been verified. How can I help you today?"}'/>
+    </Stream>
+  </Connect>
+</Response>`;
+
+  res.type('text/xml').send(twiml);
+});
+
+
 // Use these to build your dashboard / frontend
 // ─────────────────────────────────────────────
 const { Ticket, RoomBooking, FoodOrder, ShuttleBooking } = require('./models');

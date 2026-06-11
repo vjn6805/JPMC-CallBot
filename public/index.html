@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JPMC Employee Assistant</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      background: #0a0f1e;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    .bg-glow {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 82, 204, 0.15) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      padding: 52px 48px;
+      text-align: center;
+      backdrop-filter: blur(12px);
+      width: 380px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      color: rgba(255,255,255,0.4);
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+
+    .phone-input-wrapper {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .phone-input-wrapper input {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    .phone-input-wrapper input::placeholder { color: rgba(255,255,255,0.3); }
+    .phone-input-wrapper input:focus { border-color: rgba(0, 122, 255, 0.6); }
+
+    .call-btn {
+      width: 100%;
+      padding: 16px;
+      border-radius: 14px;
+      border: none;
+      background: linear-gradient(135deg, #0052cc, #0077ff);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.2s;
+      letter-spacing: 0.3px;
+    }
+
+    .call-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(0, 82, 204, 0.4);
+    }
+
+    .call-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .call-btn.calling {
+      background: linear-gradient(135deg, #1a7a3a, #22a84e);
+      animation: pulse-btn 1.5s infinite;
+    }
+
+    .call-btn.error-state {
+      background: linear-gradient(135deg, #8b0000, #cc2200);
+    }
+
+    @keyframes pulse-btn {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(34, 168, 78, 0.4); }
+      50% { box-shadow: 0 0 0 12px rgba(34, 168, 78, 0); }
+    }
+
+    .phone-icon { font-size: 18px; }
+
+    .status {
+      margin-top: 20px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      min-height: 20px;
+      transition: color 0.3s;
+    }
+
+    .status.success { color: #4cde80; }
+    .status.error   { color: #ff6b6b; }
+    .status.calling { color: #60a5fa; }
+
+    .features {
+      margin-top: 36px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .feature-tag {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.45);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #0077ff;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-glow"></div>
+
+  <div class="card">
+    <div class="logo">JPMorgan Chase</div>
+    <h1>Employee Assistant</h1>
+    <p class="subtitle">Enter your registered number and we'll call you. Your identity will be verified automatically.</p>
+
+    <div class="phone-input-wrapper">
+      <input
+        type="tel"
+        id="phoneInput"
+        placeholder="+91XXXXXXXXXX"
+        maxlength="15"
+      />
+    </div>
+
+    <button class="call-btn" id="callBtn" onclick="initiateCall()">
+      <span class="phone-icon">📞</span>
+      <span id="btnText">Call Me Now</span>
+    </button>
+
+    <p class="status" id="status"></p>
+
+    <div class="features">
+      <div class="feature-tag"><div class="dot"></div>IT Helpdesk</div>
+      <div class="feature-tag"><div class="dot"></div>Room Booking</div>
+      <div class="feature-tag"><div class="dot"></div>Food Ordering</div>
+      <div class="feature-tag"><div class="dot"></div>Shuttle Booking</div>
+      <div class="feature-tag"><div class="dot"></div>HR Policies</div>
+      <div class="feature-tag"><div class="dot"></div>Dev Guides</div>
+    </div>
+  </div>
+
+  <script>
+    async function initiateCall() {
+      const btn       = document.getElementById('callBtn');
+      const btnText   = document.getElementById('btnText');
+      const status    = document.getElementById('status');
+      const phoneInput = document.getElementById('phoneInput');
+      const phone     = phoneInput.value.trim();
+
+      if (!phone || phone.length < 10) {
+        status.textContent = 'Please enter a valid phone number with country code.';
+        status.className   = 'status error';
+        return;
+      }
+
+      btn.disabled     = true;
+      btn.className    = 'call-btn calling';
+      btnText.textContent = 'Calling you...';
+      status.textContent  = 'Initiating call, please wait...';
+      status.className    = 'status calling';
+
+      try {
+        const res  = await fetch('/call/outbound', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ to: phone })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          btnText.textContent = 'Incoming call on the way!';
+          status.textContent  = `📲 Your phone will ring shortly. Answer to speak with Alex.`;
+          status.className    = 'status success';
+
+          // Reset after 30 seconds
+          setTimeout(() => {
+            btn.disabled        = false;
+            btn.className       = 'call-btn';
+            btnText.textContent = 'Call Me Now';
+            status.textContent  = '';
+            status.className    = 'status';
+          }, 30000);
+        } else {
+          throw new Error(data.error || 'Call failed');
+        }
+      } catch (err) {
+        btn.disabled        = false;
+        btn.className       = 'call-btn error-state';
+        btnText.textContent = 'Try Again';
+        status.textContent  = err.message.includes('not registered')
+          ? '❌ This number is not registered with JPMC.'
+          : '❌ Could not initiate call. Please try again.';
+        status.className    = 'status error';
+
+        setTimeout(() => { btn.className = 'call-btn'; }, 3000);
+      }
+    }
+
+    // Allow pressing Enter to trigger call
+    document.getElementById('phoneInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') initiateCall();
+    });
+  </script>
+</body>
+</html>
