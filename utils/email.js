@@ -177,22 +177,38 @@ function sendShuttleEmail(employee, booking) {
 function sendComplaintEmail(employee, complaint) {
   if (!employee?.email) return;
 
-  const html = baseTemplate('Complaint Received', '#d90429', '⚠️',
+  const severityColors = {
+    CRITICAL: '#d90429',
+    HIGH:     '#e85d04',
+    MEDIUM:   '#f4a261',
+    LOW:      '#457b9d'
+  };
+  const accentColor = severityColors[complaint.severity] || '#d90429';
+
+  const quickBadge = complaint.quick_resolution
+    ? `<span class="badge" style="background:#fff3cd;color:#856404">⚡ QUICK RESOLUTION</span>`
+    : '';
+
+  const html = baseTemplate('Complaint Received', accentColor, '⚠️',
     `<p class="greeting">Hello ${employee.name},</p>
-     <p class="sub">We have received your complaint. Our team will acknowledge and act on it shortly.</p>
+     <p class="sub">Your complaint has been received and routed to the appropriate team. We will acknowledge and act on it within the SLA window.</p>
      <div class="card">
        <div class="card-title">Complaint Details</div>
        <div class="row"><span class="rl">Complaint ID</span><span class="rv">${complaint.complaint_id}</span></div>
-       <div class="row"><span class="rl">Type</span><span class="rv">${complaint.complaint_type}</span></div>
+       <div class="row"><span class="rl">Type</span><span class="rv">${complaint.complaint_type ? complaint.complaint_type.replace(/_/g,' ') : 'General'}</span></div>
+       <div class="row"><span class="rl">Description</span><span class="rv">${complaint.description}</span></div>
        <div class="row"><span class="rl">Location</span><span class="rv">${complaint.location || 'Not specified'}</span></div>
-       <div class="row"><span class="rl">Reported Person</span><span class="rv">${complaint.reported_person || 'N/A'}</span></div>
-       <div class="row"><span class="rl">Severity</span><span class="rv">${complaint.severity}</span></div>
-       <div class="row"><span class="rl">Status</span><span class="rv">${complaint.status}</span></div>
+       ${complaint.reported_person ? `<div class="row"><span class="rl">Reported Person</span><span class="rv">${complaint.reported_person}</span></div>` : ''}
+       <div class="row"><span class="rl">Severity</span><span class="rv"><span class="badge" style="background:${accentColor}22;color:${accentColor}">${complaint.severity}</span></span></div>
+       <div class="row"><span class="rl">Assigned To</span><span class="rv">${complaint.assigned_team || 'Corporate Services'}</span></div>
+       <div class="row"><span class="rl">Expected Response</span><span class="rv">Within ${complaint.sla_hours || 24} hour(s)</span></div>
+       <div class="row"><span class="rl">Priority</span><span class="rv">${quickBadge || `<span class="badge b-pending">${complaint.status}</span>`}</span></div>
+       <div class="row"><span class="rl">Raised At</span><span class="rv">${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} IST</span></div>
      </div>
-     <p class="sub">You can reply to this email or call extension <strong>1234</strong> for urgent follow-up.</p>`
+     <p class="sub">Keep your Complaint ID <strong>${complaint.complaint_id}</strong> handy. You can check its status by calling the JPMC Assistant or emailing <strong>helpdesk@jpmc.com</strong>.</p>`
   );
 
-  sendMail(employee.email, `[${complaint.complaint_id}] Complaint Received — ${complaint.complaint_type}`, html);
+  sendMail(employee.email, `[${complaint.complaint_id}] Complaint — ${complaint.complaint_type ? complaint.complaint_type.replace(/_/g,' ') : 'General'} — ${complaint.severity} Priority`, html);
 }
 
 module.exports = { sendTicketEmail, sendRoomBookingEmail, sendFoodOrderEmail, sendShuttleEmail, sendComplaintEmail };

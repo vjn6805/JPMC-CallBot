@@ -127,6 +127,9 @@ app.use('/food', foodRoutes);
 const shuttleRoutes = require('./routes/shuttle');
 app.use('/shuttle', shuttleRoutes);
 
+const complaintsRoutes = require('./routes/complaints');
+app.use('/complaints', complaintsRoutes);
+
 // ─────────────────────────────────────────────
 // ROUTE 1: Twilio incoming call
 // Phase 1 auth + hand off to vAPI
@@ -239,22 +242,24 @@ app.post('/call/twiml', (req, res) => {
 
 // Use these to build your dashboard / frontend
 // ─────────────────────────────────────────────
-const { Ticket, RoomBooking, FoodOrder, ShuttleBooking } = require('./models');
+const { Ticket, RoomBooking, FoodOrder, ShuttleBooking, Complaint } = require('./models');
 
 app.get('/api/tickets',          async (req, res) => { res.json(await Ticket.find().sort({ raised_at: -1 })); });
 app.get('/api/room-bookings',    async (req, res) => { res.json(await RoomBooking.find().sort({ booked_at: -1 })); });
 app.get('/api/food-orders',      async (req, res) => { res.json(await FoodOrder.find().sort({ ordered_at: -1 })); });
 app.get('/api/shuttle-bookings', async (req, res) => { res.json(await ShuttleBooking.find().sort({ booked_at: -1 })); });
+app.get('/api/complaints',       async (req, res) => { res.json(await Complaint.find().sort({ raised_at: -1 })); });
 
 // Summary endpoint — useful for dashboard
 app.get('/api/summary', async (req, res) => {
-  const [tickets, rooms, food, shuttles] = await Promise.all([
+  const [tickets, rooms, food, shuttles, complaints] = await Promise.all([
     Ticket.countDocuments({ status: 'OPEN' }),
     RoomBooking.countDocuments({ status: 'CONFIRMED' }),
     FoodOrder.countDocuments({ status: 'PENDING_PAYMENT' }),
-    ShuttleBooking.countDocuments({ status: 'CONFIRMED' })
+    ShuttleBooking.countDocuments({ status: 'CONFIRMED' }),
+    Complaint.countDocuments({ status: 'PENDING' })
   ]);
-  res.json({ open_tickets: tickets, active_room_bookings: rooms, pending_food_orders: food, shuttle_bookings: shuttles });
+  res.json({ open_tickets: tickets, active_room_bookings: rooms, pending_food_orders: food, shuttle_bookings: shuttles, pending_complaints: complaints });
 });
 
 // Health check

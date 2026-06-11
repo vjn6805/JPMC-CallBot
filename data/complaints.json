@@ -1,0 +1,193 @@
+{
+  "complaint_types": [
+    {
+      "id": "FACILITY_QUICK",
+      "label": "Facility Quick Fix",
+      "description": "Physical facility issues needing immediate attention — missing equipment, broken amenity, no supplies",
+      "sla_hours": 2,
+      "priority": "HIGH",
+      "assigned_team": "Facilities Management",
+      "assigned_email": "facilities@jpmc.com",
+      "keywords": ["ball", "racket", "equipment", "broken", "missing", "no supply", "damaged", "light", "bulb", "chair", "table", "AC", "air conditioning", "fan", "heater", "socket", "plug point", "whiteboard", "marker", "projector", "screen", "remote", "lock", "door", "window", "sink", "tap", "toilet", "washroom", "restroom", "bathroom", "dispenser", "soap", "tissue", "sanitizer", "lift", "elevator", "stairs", "ramp"],
+      "examples": [
+        "No TT ball at the TT court",
+        "Broken chair in conference room",
+        "AC not working on Floor 4",
+        "No tissue paper in restroom",
+        "Projector remote missing in Aqua room"
+      ]
+    },
+    {
+      "id": "PERSON_REPORT",
+      "label": "Behaviour / Misconduct Report",
+      "description": "Report an individual for unprofessional conduct, harassment, discrimination, or policy violation",
+      "sla_hours": 4,
+      "priority": "HIGH",
+      "assigned_team": "HR Employee Relations",
+      "assigned_email": "hr.relations@jpmc.com",
+      "keywords": ["behaviour", "behavior", "misconduct", "harassment", "rude", "inappropriate", "disrespectful", "abusive", "discriminate", "discrimination", "bullying", "toxic", "offensive", "intimidate", "hostile", "threatening", "sexual", "racist", "bias", "unfair treatment"],
+      "examples": [
+        "A colleague was rude and disrespectful in a team meeting",
+        "Someone made an inappropriate comment",
+        "Witnessed discriminatory behaviour towards a colleague"
+      ]
+    },
+    {
+      "id": "STAFF_BEHAVIOUR",
+      "label": "Inconsistent Staff Behaviour",
+      "description": "Report inconsistent, unhelpful, or unprofessional conduct by JPMC staff (reception, cafeteria, security, facilities)",
+      "sla_hours": 6,
+      "priority": "MEDIUM",
+      "assigned_team": "Corporate Services & Admin",
+      "assigned_email": "corporate.services@jpmc.com",
+      "keywords": ["staff", "receptionist", "security", "guard", "cafeteria", "canteen staff", "cleaning", "housekeeping", "unprofessional", "rude staff", "unhelpful", "ignored", "inconsistent service", "slow service", "attitude"],
+      "examples": [
+        "Reception staff was unhelpful and dismissive",
+        "Cafeteria staff was rude during lunch",
+        "Security guard was inconsistent in applying entry rules"
+      ]
+    },
+    {
+      "id": "FOOD_QUALITY",
+      "label": "Food Quality Complaint",
+      "description": "Report issues with food quality, hygiene, foreign objects, under-cooked items at any JPMC cafeteria or outlet",
+      "sla_hours": 2,
+      "priority": "HIGH",
+      "assigned_team": "Cafeteria & Vendor Management",
+      "assigned_email": "cafeteria@jpmc.com",
+      "keywords": ["food", "taste", "quality", "stale", "expired", "bad smell", "undercooked", "overcooked", "unhygienic", "dirty", "bug", "insect", "foreign object", "hair", "stone", "plastic", "cold food", "wrong order", "missing item", "cafeteria", "canteen", "outlet"],
+      "examples": [
+        "Food was stale and had a bad smell at Tower A cafeteria",
+        "Found a foreign object in the food",
+        "Food was served cold despite ordering hot items"
+      ]
+    },
+    {
+      "id": "WORKSPACE_ISSUE",
+      "label": "Workspace / Desk Issue",
+      "description": "Report issues with assigned workstation, desk allocation, seating, locker, or workspace cleanliness",
+      "sla_hours": 8,
+      "priority": "MEDIUM",
+      "assigned_team": "Workplace Experience Team",
+      "assigned_email": "workplace@jpmc.com",
+      "keywords": ["desk", "seat", "locker", "workstation", "dirty desk", "cleaning", "unclean", "space", "crowded", "noise", "loud", "disturbance", "hot desk", "allocation", "floor", "floor plan"],
+      "examples": [
+        "My assigned desk was occupied by someone else",
+        "The floor is too noisy, affecting concentration",
+        "Locker is broken and cannot be opened"
+      ]
+    },
+    {
+      "id": "SAFETY_SECURITY",
+      "label": "Safety & Security Concern",
+      "description": "Report safety hazards, security breaches, emergency-related issues, or suspicious activity on JPMC premises",
+      "sla_hours": 1,
+      "priority": "CRITICAL",
+      "assigned_team": "Corporate Security",
+      "assigned_email": "security@jpmc.com",
+      "keywords": ["safety", "security", "fire", "hazard", "emergency", "suspicious", "threat", "injury", "accident", "first aid", "spill", "leak", "flood", "power failure", "blackout", "smoke", "gas", "entry", "badge", "access card", "tailgate", "stranger"],
+      "examples": [
+        "There is a water leak on Floor 3",
+        "Noticed a stranger without a badge on the floor",
+        "Someone had an accident in the stairwell"
+      ]
+    },
+    {
+      "id": "RECREATION_FACILITY",
+      "label": "Recreation Facility Issue",
+      "description": "Report issues with gym, TT court, sports area, relaxation rooms, or any recreational amenity",
+      "sla_hours": 4,
+      "priority": "MEDIUM",
+      "assigned_team": "Facilities Management",
+      "assigned_email": "facilities@jpmc.com",
+      "keywords": ["gym", "tt court", "table tennis", "ping pong", "badminton", "carrom", "foosball", "recreation", "game room", "sports", "nap room", "nap pod", "meditation", "relaxation room", "music room", "terrace", "lounge"],
+      "examples": [
+        "The TT table is damaged",
+        "Gym equipment is broken",
+        "Nap room is always booked and there is no fair queuing system"
+      ]
+    },
+    {
+      "id": "TRANSPORT_ISSUE",
+      "label": "Transport & Cab Complaint",
+      "description": "Report issues with JPMC office cabs, shuttle services, driver behaviour, or route issues",
+      "sla_hours": 4,
+      "priority": "MEDIUM",
+      "assigned_team": "Transport & Fleet Management",
+      "assigned_email": "transport@jpmc.com",
+      "keywords": ["cab", "taxi", "driver", "shuttle", "bus", "transport", "route", "pickup", "drop", "rash driving", "late pickup", "cancelled", "no show", "comfort", "vehicle condition", "smell", "broke down"],
+      "examples": [
+        "Driver was rash and drove dangerously",
+        "Cab did not arrive at the pickup point",
+        "Shuttle was 30 minutes late with no communication"
+      ]
+    },
+    {
+      "id": "HR_POLICY",
+      "label": "HR / Policy Grievance",
+      "description": "Raise a formal grievance about HR policies, appraisal process, payroll discrepancy, leave denial, or compliance issues",
+      "sla_hours": 48,
+      "priority": "MEDIUM",
+      "assigned_team": "HR Business Partner",
+      "assigned_email": "hr.bp@jpmc.com",
+      "keywords": ["salary", "payroll", "pay", "appraisal", "performance", "leave", "denied leave", "promotion", "hike", "increment", "policy", "unfair", "grievance", "complaint hr", "benefits", "insurance claim", "pf", "provident fund", "compliance"],
+      "examples": [
+        "My leave was denied without proper reason",
+        "There is a discrepancy in my payroll for this month",
+        "The appraisal rating seems unfair given my contributions"
+      ]
+    },
+    {
+      "id": "CLEANLINESS",
+      "label": "Cleanliness / Hygiene Complaint",
+      "description": "Report unclean floors, washrooms, pantry, or common areas that need immediate housekeeping attention",
+      "sla_hours": 2,
+      "priority": "MEDIUM",
+      "assigned_team": "Housekeeping & Facilities",
+      "assigned_email": "housekeeping@jpmc.com",
+      "keywords": ["dirty", "unclean", "smell", "washroom", "toilet", "restroom", "pantry", "kitchen", "common area", "spill", "trash", "dustbin", "overflow", "stain", "floor", "cleaning", "sweep", "mop"],
+      "examples": [
+        "The Floor 4 washroom is very dirty",
+        "Pantry area has not been cleaned all day",
+        "There is a foul smell in the common area"
+      ]
+    },
+    {
+      "id": "OTHER",
+      "label": "General Corporate Complaint",
+      "description": "Any other JPMC office-related complaint that does not fit the above categories",
+      "sla_hours": 24,
+      "priority": "LOW",
+      "assigned_team": "General Corporate Services",
+      "assigned_email": "corporate@jpmc.com",
+      "keywords": [],
+      "examples": []
+    }
+  ],
+  "locations": {
+    "buildings": ["Tower A", "Tower B", "Tower C"],
+    "floors": {
+      "Tower A": [1, 2, 3, 4, 5, 6],
+      "Tower B": [1, 2, 3, 4, 5, 6, 7],
+      "Tower C": [1, 2, 3, 4]
+    },
+    "specific_spots": [
+      { "id": "LOC_TA_TT", "name": "TT Court", "building": "Tower A", "floor": 4, "description": "Table Tennis Court near the recreation zone" },
+      { "id": "LOC_TA_GYM", "name": "Gym", "building": "Tower A", "floor": 1, "description": "Employee fitness centre" },
+      { "id": "LOC_TA_CAF", "name": "Tower A Cafeteria", "building": "Tower A", "floor": 2, "description": "Main cafeteria outlet" },
+      { "id": "LOC_TB_CAF", "name": "Tower B Cafeteria", "building": "Tower B", "floor": 3, "description": "Tower B food court" },
+      { "id": "LOC_TC_CAF", "name": "Tower C Cafeteria", "building": "Tower C", "floor": 1, "description": "Tower C cafeteria" },
+      { "id": "LOC_TA_LOUNGE", "name": "Employee Lounge", "building": "Tower A", "floor": 5, "description": "Relaxation and nap room area" },
+      { "id": "LOC_TA_RECEPTION", "name": "Main Reception", "building": "Tower A", "floor": 1, "description": "Ground floor reception and lobby" },
+      { "id": "LOC_TB_RECEPTION", "name": "Tower B Reception", "building": "Tower B", "floor": 1, "description": "Tower B lobby" },
+      { "id": "LOC_TA_TERRACE", "name": "Terrace", "building": "Tower A", "floor": 6, "description": "Open terrace seating area" },
+      { "id": "LOC_TA_BADMINTON", "name": "Badminton Court", "building": "Tower A", "floor": 4, "description": "Badminton court near recreation zone" }
+    ]
+  },
+  "severity_rules": {
+    "CRITICAL": ["SAFETY_SECURITY"],
+    "HIGH": ["FACILITY_QUICK", "PERSON_REPORT", "FOOD_QUALITY"],
+    "MEDIUM": ["STAFF_BEHAVIOUR", "WORKSPACE_ISSUE", "RECREATION_FACILITY", "TRANSPORT_ISSUE", "HR_POLICY", "CLEANLINESS"],
+    "LOW": ["OTHER"]
+  }
+}

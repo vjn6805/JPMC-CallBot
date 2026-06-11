@@ -19,7 +19,7 @@ async function createAssistant() {
       messages: [
         {
           role: "system",
-          content: `You are Alex, a JPMC employee assistant for IT Helpdesk, Meeting Room reservations, and company knowledge.
+          content: `You are Alex, a JPMC employee assistant for IT Helpdesk, Meeting Room reservations, Food Ordering, Shuttle Booking, Company Knowledge, and Complaints.
 
 The caller has already been verified. Do NOT ask for name or employee ID.
 
@@ -52,7 +52,6 @@ FOR SHUTTLE BOOKING:
 - Remind user: bookings must be made 6 hours before departure, cancellations 1 hour before
 - For listing bookings → call my_shuttle_bookings
 
-
 FOR FOOD ORDERING:
 - When user asks about food or cuisine → call search_food
 - search_food returns outlet_id and item_ids in the response — remember these
@@ -73,6 +72,53 @@ FOR MEETING ROOMS AND FOCUS ROOMS:
 
 FOR CANCELLATIONS: ask for booking/ticket ID → call the cancel tool
 FOR LISTING: call my_bookings or my_tickets as appropriate
+
+FOR COMPLAINTS & FACILITY ISSUES (SEPARATE FROM IT HELPDESK):
+This is a SEPARATE system from IT — do NOT use raise_ticket for complaints.
+
+COMPLAINT TYPES you can handle:
+- Facility Quick Fix: Missing or broken equipment, no supplies (e.g. no TT ball, AC not working, projector missing, no tissue in washroom)
+- Person Report: Bad behaviour, harassment, or misconduct by a colleague
+- Staff Behaviour: Rude or inconsistent conduct by JPMC staff (reception, cafeteria, security, housekeeping)
+- Food Quality: Stale food, bad taste, foreign object, unhygienic conditions at any JPMC outlet or cafeteria
+- Workspace Issue: Desk, seating, or locker problems, noise, dirty workstation
+- Safety or Security: Hazards, breaches, emergencies, suspicious activity — always flag as CRITICAL
+- Recreation Facility: Gym, TT court, badminton, nap room, lounge issues
+- Transport or Cab: Driver behaviour, late pickup, shuttle route issues
+- HR or Policy Grievance: Payroll discrepancy, leave denial, unfair appraisal
+- Cleanliness: Dirty washrooms, pantry, or common areas needing housekeeping
+
+HOW TO HANDLE COMPLAINTS:
+1. Listen carefully to identify the complaint type.
+2. For FACILITY issues (missing or broken things):
+   - Ask "Where exactly is this? Which building and floor?"
+   - Call raise_facility_complaint with description and location
+   - Tell them it is flagged for QUICK RESOLUTION and facilities will check right away
+3. For PERSON or STAFF BEHAVIOUR reports:
+   - Ask if they want to name the person or stay anonymous
+   - Ask where the incident happened
+   - Call report_person with description, reported_person (optional), incident_location, and is_staff (true for JPMC staff, false for colleague)
+   - Assure them their identity is fully protected
+4. For FOOD QUALITY issues:
+   - Ask which outlet or cafeteria had the problem
+   - Call report_food_quality with description and outlet_name
+   - Tell them the cafeteria team will be alerted immediately
+5. For ALL OTHER complaints:
+   - Call raise_complaint with the description — the system auto-detects the type and routes to the right team
+6. After any complaint: always read out the complaint ID, the team it was sent to, and the SLA timeframe
+7. To check a complaint status: call check_complaint with the ID
+8. To list their complaints: call my_complaints
+
+JPMC OFFICE LOCATIONS (use for location disambiguation):
+- Tower A: Floors 1 to 6. TT Court on Floor 4. Gym on Floor 1. Employee Lounge on Floor 5. Main Reception on Floor 1.
+- Tower B: Floors 1 to 7. Tower B Reception on Floor 1.
+- Tower C: Floors 1 to 4.
+
+COMPLAINT RULES:
+- SAFETY issues: immediately tell them to call security extension 911, then also raise the complaint
+- Never minimize or dismiss a harassment or behaviour report
+- Always confirm the complaint ID and assigned team to the employee
+- Complaints are COMPLETELY SEPARATE from IT tickets — never mix them
 
 HANDLING DATES:
 - Today is ${new Date().toISOString().split('T')[0]}
@@ -328,6 +374,7 @@ RULES:
           },
           server: { url: `${SERVER_URL}/food/get-menu` }
         },
+        // ── Knowledge Base Tools ──
         {
           type: "function",
           function: {
@@ -354,6 +401,142 @@ RULES:
             parameters: { type: "object", properties: {}, required: [] }
           },
           server: { url: `${SERVER_URL}/rag/topics` }
+        },
+        // ── Complaints Tools ──
+        {
+          type: "function",
+          function: {
+            name: "raise_facility_complaint",
+            description: "Raise a quick-resolution facility complaint for missing or broken equipment, no supplies, or non-functioning amenities (e.g. no TT ball, AC not working, projector remote missing, no tissue in washroom). Always ask for the exact location before calling this.",
+            parameters: {
+              type: "object",
+              properties: {
+                description: {
+                  type: "string",
+                  description: "What is the issue? e.g. 'No TT ball at the TT court', 'AC not working on floor 4', 'Projector remote missing in Aqua room'"
+                },
+                location: {
+                  type: "string",
+                  description: "Exact location of the issue, e.g. 'TT Court, Tower A, Floor 4', 'Conference Room Aqua, Tower B', 'Floor 3 washroom, Tower C'"
+                }
+              },
+              required: ["description", "location"]
+            }
+          },
+          server: { url: `${SERVER_URL}/complaints/raise-facility` }
+        },
+        {
+          type: "function",
+          function: {
+            name: "report_person",
+            description: "Report an individual for bad behaviour, misconduct, harassment, discrimination, or inconsistent staff conduct. Set is_staff=true for JPMC operational staff (reception, cafeteria, security, housekeeping). Set is_staff=false for colleague misconduct.",
+            parameters: {
+              type: "object",
+              properties: {
+                description: {
+                  type: "string",
+                  description: "What happened? Describe the incident clearly."
+                },
+                reported_person: {
+                  type: "string",
+                  description: "Name, designation, or description of the person involved (optional — can be left blank for anonymity)"
+                },
+                incident_location: {
+                  type: "string",
+                  description: "Where did this happen? e.g. 'Tower A cafeteria', 'Floor 4 common area', 'Main reception'"
+                },
+                is_staff: {
+                  type: "boolean",
+                  description: "true if the person is JPMC operational staff (security, cafeteria, reception, housekeeping). false if it is a colleague or employee."
+                }
+              },
+              required: ["description"]
+            }
+          },
+          server: { url: `${SERVER_URL}/complaints/report-person` }
+        },
+        {
+          type: "function",
+          function: {
+            name: "report_food_quality",
+            description: "Report a food quality issue at any JPMC cafeteria or outlet — stale food, bad taste, unhygienic conditions, foreign objects in food, wrong or missing items.",
+            parameters: {
+              type: "object",
+              properties: {
+                description: {
+                  type: "string",
+                  description: "Describe the food issue, e.g. 'Biryani was stale and had a bad smell', 'Found a hair in the salad'"
+                },
+                outlet_name: {
+                  type: "string",
+                  description: "Name of the cafeteria or outlet, e.g. 'Tower A Cafeteria', 'Tower B Food Court'"
+                },
+                location: {
+                  type: "string",
+                  description: "Location of the outlet if outlet name is unknown, e.g. 'Tower B, Floor 3'"
+                }
+              },
+              required: ["description"]
+            }
+          },
+          server: { url: `${SERVER_URL}/complaints/report-food` }
+        },
+        {
+          type: "function",
+          function: {
+            name: "raise_complaint",
+            description: "Raise a general complaint for any JPMC office-related issue — workspace problems, safety concerns, transport issues, HR grievances, cleanliness, recreation facilities. The system auto-detects the type and routes it to the correct team. Use this when the issue does not clearly fit facility, person, or food categories.",
+            parameters: {
+              type: "object",
+              properties: {
+                description: {
+                  type: "string",
+                  description: "Full description of the complaint"
+                },
+                location: {
+                  type: "string",
+                  description: "Where did this happen or where is the issue? e.g. 'Tower A, Floor 4', 'Main lobby'"
+                },
+                reported_person: {
+                  type: "string",
+                  description: "Name of a person involved, if applicable"
+                },
+                quick_resolution: {
+                  type: "boolean",
+                  description: "Set to true if this needs immediate attention"
+                }
+              },
+              required: ["description"]
+            }
+          },
+          server: { url: `${SERVER_URL}/complaints/raise` }
+        },
+        {
+          type: "function",
+          function: {
+            name: "check_complaint",
+            description: "Check the current status of a complaint using its complaint ID",
+            parameters: {
+              type: "object",
+              properties: {
+                complaint_id: {
+                  type: "string",
+                  description: "The complaint ID, e.g. JPMC-CMP-1001"
+                }
+              },
+              required: ["complaint_id"]
+            }
+          },
+          server: { url: `${SERVER_URL}/complaints/check` }
+        },
+        {
+          type: "function",
+          function: {
+            name: "my_complaints",
+            description: "List all complaints raised by the current caller",
+            parameters: { type: "object", properties: {}, required: [] }
+          },
+          server: { url: `${SERVER_URL}/complaints/my-complaints` }
         }
       ]
     },

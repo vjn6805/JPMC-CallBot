@@ -78,13 +78,15 @@ const shuttleBookingSchema = new mongoose.Schema({
 // ── Complaints ──
 const complaintSchema = new mongoose.Schema({
   complaint_id:    String,
-  complaint_type:  String, // e.g., QUICK_FIX, PERSON_REPORT, FOOD_QUALITY, FACILITY
+  complaint_type:  String, // FACILITY_QUICK, PERSON_REPORT, STAFF_BEHAVIOUR, FOOD_QUALITY, WORKSPACE_ISSUE, SAFETY_SECURITY, RECREATION_FACILITY, TRANSPORT_ISSUE, HR_POLICY, CLEANLINESS, OTHER
   description:     String,
-  location:        String, // e.g., 'TT Court, Building A'
+  location:        String, // e.g., 'TT Court, Tower A, Floor 4'
   outlet_id:       String, // when applicable for food quality
   reported_person: String, // optional name or identifier
-  severity:        { type: String, default: 'LOW' },
-  status:          { type: String, default: 'PENDING' },
+  severity:        { type: String, default: 'LOW' }, // CRITICAL, HIGH, MEDIUM, LOW
+  assigned_team:   String, // e.g., 'Facilities Management'
+  sla_hours:       { type: Number, default: 24 },
+  status:          { type: String, default: 'PENDING' }, // PENDING, IN_PROGRESS, RESOLVED, CLOSED
   employee_sid:    String,
   employee_name:   String,
   phone_number:    String,
