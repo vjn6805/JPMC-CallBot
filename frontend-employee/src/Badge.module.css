@@ -12,6 +12,7 @@
 .green  { background: var(--green-dim);  color: var(--green);  border: 1px solid rgba(27, 77, 62, 0.15); }
 .yellow { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(140, 119, 62, 0.15); }
 .red    { background: var(--red-dim);    color: var(--red);    border: 1px solid rgba(158, 42, 43, 0.15); }
-.blue   { background: var(--blue-dim);   color: var(--blue);   border: 1px solid rgba(27, 54, 93, 0.15); }
+.blue   { background: var(--blue-dim);   color: var(--blue);   border: 1px solid rgba(143, 90, 57, 0.15); }
 .purple { background: var(--purple-dim); color: var(--purple); border: 1px solid rgba(74, 59, 107, 0.15); }
+
 

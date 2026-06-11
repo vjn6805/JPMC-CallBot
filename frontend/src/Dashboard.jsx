@@ -111,7 +111,7 @@ function StatCard({ label, value, sub, color }) {
   )
 }
 
-export default function Dashboard({ onLogout }) {
+export default function Dashboard() {
   const [tab, setTab] = useState('tickets')
 
   const tickets = useData('/api/tickets')
@@ -156,7 +156,7 @@ export default function Dashboard({ onLogout }) {
             <span className={s.adminDot} />
             admin
           </div>
-          <button className={s.logoutBtn} onClick={onLogout}>Sign out</button>
+
         </div>
       </header>
 

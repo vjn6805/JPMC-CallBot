@@ -3,7 +3,7 @@
   border-radius: 8px;
   overflow: auto;
   background: var(--bg-2);
-  box-shadow: 0 4px 15px rgba(27, 54, 93, 0.02);
+  box-shadow: 0 4px 15px rgba(143, 90, 57, 0.02);
 }
 
 .table {

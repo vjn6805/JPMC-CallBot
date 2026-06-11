@@ -93,7 +93,7 @@
   background: var(--bg-2);
   padding: 40px 36px;
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(27, 54, 93, 0.04), 0 1px 3px rgba(27, 54, 93, 0.02);
+  box-shadow: 0 10px 30px rgba(143, 90, 57, 0.04), 0 1px 3px rgba(143, 90, 57, 0.02);
   border: 1px solid var(--border);
 }
 
@@ -156,7 +156,7 @@
 
 .field input:focus {
   border-color: var(--jpm-navy);
-  box-shadow: 0 0 0 3px rgba(27, 54, 93, 0.1);
+  box-shadow: 0 0 0 3px rgba(143, 90, 57, 0.1);
   background: var(--bg-2);
 }
 
@@ -183,13 +183,13 @@
   font-weight: 600;
   margin-top: 8px;
   transition: all 0.2s;
-  box-shadow: 0 4px 12px rgba(27, 54, 93, 0.15);
+  box-shadow: 0 4px 12px rgba(143, 90, 57, 0.15);
 }
 
 .btn:hover {
-  background: #112542;
+  background: #6d4123;
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(27, 54, 93, 0.25);
+  box-shadow: 0 6px 16px rgba(143, 90, 57, 0.25);
 }
 
 .btn:active {

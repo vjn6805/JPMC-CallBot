@@ -16,7 +16,7 @@
   padding: 0 24px;
   background: var(--jpm-navy);
   flex-shrink: 0;
-  box-shadow: 0 4px 20px rgba(27, 54, 93, 0.08);
+  box-shadow: 0 4px 20px rgba(143, 90, 57, 0.08);
 }
 
 .topLeft {
@@ -30,7 +30,7 @@
   font-size: 16px;
   font-weight: 700;
   letter-spacing: 2px;
-  color: var(--jpm-gold);
+  color: #FFFFFF;
 }
 
 .topSep {
@@ -107,7 +107,7 @@
   justify-content: space-between;
   flex-shrink: 0;
   padding: 24px 0;
-  box-shadow: 2px 0 10px rgba(27, 54, 93, 0.01);
+  box-shadow: 2px 0 10px rgba(143, 90, 57, 0.01);
 }
 
 .navGroup {
@@ -230,7 +230,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  box-shadow: 0 4px 12px rgba(27, 54, 93, 0.02), 0 1px 2px rgba(27, 54, 93, 0.01);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   transition: all 0.2s;
   position: relative;
   overflow: hidden;
@@ -248,7 +248,7 @@
 
 .statCard:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(27, 54, 93, 0.05);
+  box-shadow: 0 8px 20px rgba(143, 90, 57, 0.05);
 }
 
 .statTop {
@@ -319,7 +319,7 @@
   color: var(--text-2);
   font-size: 14px;
   transition: all 0.2s;
-  box-shadow: 0 1px 2px rgba(27, 54, 93, 0.02);
+  box-shadow: 0 1px 2px rgba(143, 90, 57, 0.02);
 }
 
 .reloadBtn:hover {
@@ -333,10 +333,10 @@
   font-family: var(--mono);
   font-size: 12px;
   color: var(--jpm-navy);
-  background: rgba(27, 54, 93, 0.05);
+  background: rgba(143, 90, 57, 0.05);
   padding: 3px 8px;
   border-radius: 4px;
-  border: 1px solid rgba(27, 54, 93, 0.1);
+  border: 1px solid rgba(143, 90, 57, 0.1);
 }
 
 .empName {
