@@ -4,6 +4,7 @@ const { ShuttleBooking } = require('../models');
 const registrations = require('../data/transport-registrations.json').registrations;
 const schedules     = require('../data/shuttle-schedules.json').routes;
 const employees     = require('../employees.json');
+const { sendShuttleEmail } = require('../utils/email');
 
 function getEmployeeByPhone(phone) { return phone ? (employees[phone] || null) : null; }
 
@@ -238,6 +239,13 @@ router.post('/book', async (req, res) => {
   });
 
   console.log(`🚌 Shuttle booked: ${bookingId} for ${employee?.name}`);
+
+  // Send confirmation email
+  sendShuttleEmail(employee, {
+    booking_id: bookingId, route_name: foundRoute.route_name,
+    travel_date, departure_time: foundTiming.departure_time,
+    arrival_time: foundTiming.arrival_time, pickup_point: foundRoute.pickup_point
+  });
 
   return vapiResponse(res, toolCallId,
     `Shuttle booked successfully! Your booking ID is ${bookingId}. ` +

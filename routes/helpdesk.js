@@ -4,6 +4,7 @@ const path = require('path');
 const { Ticket } = require('../models');
 const employees = require('../employees.json');
 const itIssues  = require('../data/it_issues.json');
+const { sendTicketEmail } = require('../utils/email');
 
 function getEmployeeByPhone(phone) { return phone ? (employees[phone] || null) : null; }
 
@@ -111,6 +112,9 @@ router.post('/raise-ticket', async (req, res) => {
   });
 
   console.log(`🎫 Ticket raised: ${ticket.ticket_id} for ${employeeName}`);
+
+  // Send confirmation email
+  sendTicketEmail(employee, ticket, category);
 
   return vapiResponse(res, toolCallId,
     `Ticket ${ticket.ticket_id} has been raised. ` +

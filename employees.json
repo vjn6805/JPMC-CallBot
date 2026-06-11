@@ -2,6 +2,7 @@
   "+917485963139": {
     "sid": "EMP001",
     "name": "Veer Jain",
+    "email": "veer.jain@jpmc.com",
     "department": "Engineering",
     "building": "Tower A",
     "floor": 4
@@ -9,6 +10,7 @@
   "+919123456789": {
     "sid": "EMP002",
     "name": "Priya Mehta",
+    "email": "priya.mehta@jpmc.com",
     "department": "HR",
     "building": "Tower B",
     "floor": 6
@@ -16,17 +18,9 @@
   "+918888888888": {
     "sid": "EMP003",
     "name": "Arjun Kapoor",
+    "email": "arjun.kapoor@jpmc.com",
     "department": "Finance",
     "building": "Tower C",
     "floor": 2
-  },
-  "+919582626655": {
-    "sid": "EMP004",
-    "name": "Swastik Dutt",
-    "department": "Engineering",
-    "building": "Tower D",
-    "floor": 5
   }
 }
-
-

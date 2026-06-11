@@ -3,6 +3,7 @@ const router   = express.Router();
 const { RoomBooking } = require('../models');
 const rooms    = require('../data/rooms.json').rooms;
 const employees = require('../employees.json');
+const { sendRoomBookingEmail } = require('../utils/email');
 
 function getEmployeeByPhone(phone) { return phone ? (employees[phone] || null) : null; }
 
@@ -164,6 +165,14 @@ router.post('/book-room', async (req, res) => {
   });
 
   console.log(`🏢 Room booked: ${bookingId}`);
+
+  // Send confirmation email
+  sendRoomBookingEmail(employee, {
+    booking_id: bookingId, room_name: room.name, room_type: room.type,
+    floor: room.floor, building: room.building, date, start_time,
+    end_time: endTime, duration_hours: duration, agenda: agenda || 'Not specified'
+  });
+
   return vapiResponse(res, toolCallId,
     `Done! ${room.name} on Floor ${room.floor}, ${room.building} is booked. ` +
     `Date: ${date}, Time: ${start_time} to ${endTime}. Your booking ID is ${bookingId}.`

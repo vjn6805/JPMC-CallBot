@@ -4,6 +4,7 @@ const twilio    = require('twilio');
 const { FoodOrder } = require('../models');
 const outlets   = require('../data/food-outlets.json').outlets;
 const employees = require('../employees.json');
+const { sendFoodOrderEmail } = require('../utils/email');
 
 const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
@@ -59,6 +60,12 @@ async function createOrder(outlet, orderedItems, phone, employee) {
 
   const itemNames = orderedItems.map(i => i.name).join(', ');
   console.log(`🍕 Order: ${orderId} for ${employee?.name}, ₹${totalAmount}`);
+
+  // Send confirmation email
+  sendFoodOrderEmail(employee, {
+    order_id: orderId, outlet_name: outlet.name, building: outlet.building,
+    floor: outlet.floor, items: orderedItems, total_amount: totalAmount
+  }, paymentLink);
 
   // Send SMS — non-blocking
   twilioClient.messages.create({
