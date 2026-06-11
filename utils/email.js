@@ -171,4 +171,28 @@ function sendShuttleEmail(employee, booking) {
   sendMail(employee.email, `[${booking.booking_id}] Shuttle Booked — ${booking.route_name}, ${booking.travel_date} at ${booking.departure_time}`, html);
 }
 
-module.exports = { sendTicketEmail, sendRoomBookingEmail, sendFoodOrderEmail, sendShuttleEmail };
+
+
+// ── Complaint Notification ──
+function sendComplaintEmail(employee, complaint) {
+  if (!employee?.email) return;
+
+  const html = baseTemplate('Complaint Received', '#d90429', '⚠️',
+    `<p class="greeting">Hello ${employee.name},</p>
+     <p class="sub">We have received your complaint. Our team will acknowledge and act on it shortly.</p>
+     <div class="card">
+       <div class="card-title">Complaint Details</div>
+       <div class="row"><span class="rl">Complaint ID</span><span class="rv">${complaint.complaint_id}</span></div>
+       <div class="row"><span class="rl">Type</span><span class="rv">${complaint.complaint_type}</span></div>
+       <div class="row"><span class="rl">Location</span><span class="rv">${complaint.location || 'Not specified'}</span></div>
+       <div class="row"><span class="rl">Reported Person</span><span class="rv">${complaint.reported_person || 'N/A'}</span></div>
+       <div class="row"><span class="rl">Severity</span><span class="rv">${complaint.severity}</span></div>
+       <div class="row"><span class="rl">Status</span><span class="rv">${complaint.status}</span></div>
+     </div>
+     <p class="sub">You can reply to this email or call extension <strong>1234</strong> for urgent follow-up.</p>`
+  );
+
+  sendMail(employee.email, `[${complaint.complaint_id}] Complaint Received — ${complaint.complaint_type}`, html);
+}
+
+module.exports = { sendTicketEmail, sendRoomBookingEmail, sendFoodOrderEmail, sendShuttleEmail, sendComplaintEmail };

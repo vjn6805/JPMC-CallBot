@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
-const { Ticket } = require('../models');
+const { Ticket, Complaint } = require('../models');
 const employees = require('../employees.json');
 const itIssues  = require('../data/it_issues.json');
-const { sendTicketEmail } = require('../utils/email');
+const { sendTicketEmail, sendComplaintEmail } = require('../utils/email');
 
 function getEmployeeByPhone(phone) { return phone ? (employees[phone] || null) : null; }
 
@@ -165,6 +165,91 @@ router.post('/my-tickets', async (req, res) => {
 
   const summary = myTickets.map(t => `${t.ticket_id}: ${t.category} is ${t.status}`).join('. ');
   return vapiResponse(res, toolCallId, `You have ${myTickets.length} ticket(s). ${summary}.`);
+});
+
+// ─────────────────────────────────────────────
+// TOOL 4: Raise a complaint (quick resolution, person report, food quality, facility)
+// ─────────────────────────────────────────────
+router.post('/raise-complaint', async (req, res) => {
+  const args       = extractArgs(req);
+  const toolCallId = getToolCallId(req);
+  const phone      = getCallerPhone(req);
+  const employee   = getEmployeeByPhone(phone);
+
+  const { description, complaint_type, location, outlet_id, reported_person, quick_resolution } = args;
+
+  if (!description || !complaint_type) {
+    return vapiResponse(res, toolCallId, 'I need the complaint description and type to proceed. Examples: QUICK_FIX, PERSON_REPORT, FOOD_QUALITY, FACILITY.');
+  }
+
+  const count = await Complaint.countDocuments();
+  const complaintId = `JPMC-CMP-${1001 + count}`;
+
+  const complaint = await Complaint.create({
+    complaint_id: complaintId,
+    complaint_type,
+    description,
+    location,
+    outlet_id,
+    reported_person,
+    quick_resolution: !!quick_resolution,
+    employee_sid: employee?.sid || 'UNKNOWN',
+    employee_name: employee?.name || 'Unknown',
+    phone_number: phone || 'Unknown',
+    status: quick_resolution ? 'PENDING' : 'PENDING'
+  });
+
+  console.log(`⚠️ Complaint raised: ${complaint.complaint_id} by ${employee?.name}`);
+
+  // Send confirmation email to user
+  sendComplaintEmail(employee, complaint);
+
+  let responseText = `Complaint ${complaint.complaint_id} received. We will act on this shortly.`;
+  if (quick_resolution) {
+    responseText = `QUICK_RESOLUTION_REQUESTED. Complaint ${complaint.complaint_id} is flagged for quick resolution. Maintenance or floor staff will check ${location || 'the area'} right away.`;
+  }
+
+  return vapiResponse(res, toolCallId, responseText);
+});
+
+// ─────────────────────────────────────────────
+// TOOL 5: Resolve a complaint (used by staff or admin)
+// ─────────────────────────────────────────────
+router.post('/resolve-complaint', async (req, res) => {
+  const args       = extractArgs(req);
+  const toolCallId = getToolCallId(req);
+  const { complaint_id, resolution_notes } = args;
+
+  if (!complaint_id) return vapiResponse(res, toolCallId, 'Please provide a complaint ID to resolve.');
+
+  const comp = await Complaint.findOne({ complaint_id });
+  if (!comp) return vapiResponse(res, toolCallId, `I could not find complaint ${complaint_id}.`);
+
+  comp.status = 'RESOLVED';
+  comp.resolved_at = new Date();
+  await comp.save();
+
+  return vapiResponse(res, toolCallId, `Complaint ${complaint_id} has been marked RESOLVED. Notes: ${resolution_notes || 'None'}`);
+});
+
+// ─────────────────────────────────────────────
+// TOOL 6: List my complaints
+// ─────────────────────────────────────────────
+router.post('/my-complaints', async (req, res) => {
+  const toolCallId = getToolCallId(req);
+  const phone      = getCallerPhone(req);
+  const employee   = getEmployeeByPhone(phone);
+  const employeeSid = employee?.sid || null;
+
+  const query = employeeSid ? { employee_sid: employeeSid } : {};
+  const myComplaints = await Complaint.find(query).sort({ raised_at: -1 }).limit(10);
+
+  if (myComplaints.length === 0) {
+    return vapiResponse(res, toolCallId, 'You have no complaints registered so far.');
+  }
+
+  const summary = myComplaints.map(c => `${c.complaint_id}: ${c.complaint_type} is ${c.status}`).join('. ');
+  return vapiResponse(res, toolCallId, `You have ${myComplaints.length} complaint(s). ${summary}.`);
 });
 
 module.exports = router;

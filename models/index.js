@@ -75,9 +75,28 @@ const shuttleBookingSchema = new mongoose.Schema({
   cancelled_at:   Date
 });
 
+// ── Complaints ──
+const complaintSchema = new mongoose.Schema({
+  complaint_id:    String,
+  complaint_type:  String, // e.g., QUICK_FIX, PERSON_REPORT, FOOD_QUALITY, FACILITY
+  description:     String,
+  location:        String, // e.g., 'TT Court, Building A'
+  outlet_id:       String, // when applicable for food quality
+  reported_person: String, // optional name or identifier
+  severity:        { type: String, default: 'LOW' },
+  status:          { type: String, default: 'PENDING' },
+  employee_sid:    String,
+  employee_name:   String,
+  phone_number:    String,
+  quick_resolution: { type: Boolean, default: false },
+  raised_at:       { type: Date, default: Date.now },
+  resolved_at:     Date
+});
+
 module.exports = {
   Ticket:          mongoose.model('Ticket', ticketSchema),
   RoomBooking:     mongoose.model('RoomBooking', roomBookingSchema),
   FoodOrder:       mongoose.model('FoodOrder', foodOrderSchema),
-  ShuttleBooking:  mongoose.model('ShuttleBooking', shuttleBookingSchema)
+  ShuttleBooking:  mongoose.model('ShuttleBooking', shuttleBookingSchema),
+  Complaint:       mongoose.model('Complaint', complaintSchema)
 };
