@@ -2,7 +2,15 @@ require('dotenv').config();
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const mongoose = require('mongoose');
 const app = express();
+
+// ─────────────────────────────────────────────
+// MongoDB connection
+// ─────────────────────────────────────────────
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('🍏 MongoDB connected'))
+  .catch(err => console.error('❌ MongoDB connection failed:', err.message));
 
 // ─────────────────────────────────────────────
 // Auto-create data files if missing (needed on
@@ -158,6 +166,28 @@ app.post('/incoming-call', (req, res) => {
     res.type('text/xml');
     res.send(twiml);
   }
+});
+
+// ─────────────────────────────────────────────
+// FRONTEND DATA APIs — accessible from anywhere
+// Use these to build your dashboard / frontend
+// ─────────────────────────────────────────────
+const { Ticket, RoomBooking, FoodOrder, ShuttleBooking } = require('./models');
+
+app.get('/api/tickets',          async (req, res) => { res.json(await Ticket.find().sort({ raised_at: -1 })); });
+app.get('/api/room-bookings',    async (req, res) => { res.json(await RoomBooking.find().sort({ booked_at: -1 })); });
+app.get('/api/food-orders',      async (req, res) => { res.json(await FoodOrder.find().sort({ ordered_at: -1 })); });
+app.get('/api/shuttle-bookings', async (req, res) => { res.json(await ShuttleBooking.find().sort({ booked_at: -1 })); });
+
+// Summary endpoint — useful for dashboard
+app.get('/api/summary', async (req, res) => {
+  const [tickets, rooms, food, shuttles] = await Promise.all([
+    Ticket.countDocuments({ status: 'OPEN' }),
+    RoomBooking.countDocuments({ status: 'CONFIRMED' }),
+    FoodOrder.countDocuments({ status: 'PENDING_PAYMENT' }),
+    ShuttleBooking.countDocuments({ status: 'CONFIRMED' })
+  ]);
+  res.json({ open_tickets: tickets, active_room_bookings: rooms, pending_food_orders: food, shuttle_bookings: shuttles });
 });
 
 // Health check
