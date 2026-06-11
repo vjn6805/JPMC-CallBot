@@ -1,15 +1,16 @@
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
-  family: 4, // force IPv4
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASSWORD
-  }
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+function sendMail(to, subject, html) {
+  resend.emails.send({
+    from: 'JPMC Employee Assistant <onboarding@resend.dev>',
+    to,
+    subject,
+    html
+  }).then(() => console.log(`📧 Email sent → ${to}`))
+    .catch(err => console.error(`⚠️ Email failed: ${err.message}`));
+}
 
 function baseTemplate(title, accentColor, iconEmoji, bodyContent) {
   return `<!DOCTYPE html>
@@ -60,16 +61,6 @@ function baseTemplate(title, accentColor, iconEmoji, bodyContent) {
 </div>
 </body>
 </html>`;
-}
-
-function sendMail(to, subject, html) {
-  transporter.sendMail({
-    from: `"${process.env.GMAIL_FROM_NAME || 'JPMC Employee Assistant'}" <${process.env.GMAIL_USER}>`,
-    to,
-    subject,
-    html
-  }).then(() => console.log(`📧 Email sent → ${to}`))
-    .catch(err => console.error(`⚠️ Email failed: ${err.message}`));
 }
 
 // ── 1. IT Ticket ──────────────────────────────
@@ -128,7 +119,7 @@ function sendFoodOrderEmail(employee, order, paymentLink) {
   if (!employee?.email) return;
 
   const itemRows = order.items.map(i =>
-    `<div class="row"><span class="rl">${i.name}</span><span class="rv">₹${i.price}</span></div>`
+    `<div class="row"><span class="rl">${i.name}</span><span class="rv">Rs.${i.price}</span></div>`
   ).join('');
 
   const html = baseTemplate('Food Order Confirmed', '#e85d04', '🍽️',
@@ -147,14 +138,14 @@ function sendFoodOrderEmail(employee, order, paymentLink) {
        <div class="divider"></div>
        <div class="row">
          <span class="rl" style="font-weight:700;color:#1a1a2e">Total Amount</span>
-         <span class="rv" style="font-size:16px;color:#e85d04">₹${order.total_amount}</span>
+         <span class="rv" style="font-size:16px;color:#e85d04">Rs.${order.total_amount}</span>
        </div>
      </div>
-     <a href="${paymentLink}" class="cta">💳 Pay Now — ₹${order.total_amount}</a>
+     <a href="${paymentLink}" class="cta">Pay Now - Rs.${order.total_amount}</a>
      <p class="sub" style="text-align:center;font-size:12px;margin-top:8px">Collect your order from the counter after payment.</p>`
   );
 
-  sendMail(employee.email, `[${order.order_id}] Food Order — ${order.outlet_name} — ₹${order.total_amount}`, html);
+  sendMail(employee.email, `[${order.order_id}] Food Order — ${order.outlet_name} — Rs.${order.total_amount}`, html);
 }
 
 // ── 4. Shuttle Booking ────────────────────────
@@ -174,7 +165,7 @@ function sendShuttleEmail(employee, booking) {
        <div class="row"><span class="rl">Arrives JPMC By</span><span class="rv">${booking.arrival_time}</span></div>
        <div class="row"><span class="rl">Status</span><span class="rv"><span class="badge b-confirmed">CONFIRMED</span></span></div>
      </div>
-     <p class="sub">⚠️ Cancellations must be made at least <strong>1 hour before departure</strong>. To cancel, call JPMC Assistant with Booking ID <strong>${booking.booking_id}</strong>.</p>`
+     <p class="sub">Cancellations must be made at least <strong>1 hour before departure</strong>. To cancel, call JPMC Assistant with Booking ID <strong>${booking.booking_id}</strong>.</p>`
   );
 
   sendMail(employee.email, `[${booking.booking_id}] Shuttle Booked — ${booking.route_name}, ${booking.travel_date} at ${booking.departure_time}`, html);
