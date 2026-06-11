@@ -37,6 +37,16 @@ async function isRoomBooked(roomId, date, startTime) {
   return await RoomBooking.exists({ room_id: roomId, date, start_time: startTime, status: 'CONFIRMED' });
 }
 
+// Normalize building name — handles "tower a", "Tower A", "towerA", "a" etc.
+function normalizeBuilding(input) {
+  if (!input) return null;
+  const s = input.toLowerCase().trim();
+  if (s.includes('a')) return 'Tower A';
+  if (s.includes('b')) return 'Tower B';
+  if (s.includes('c')) return 'Tower C';
+  return null;
+}
+
 // TOOL 1: Check room availability
 router.post('/check-availability', async (req, res) => {
   const args       = extractArgs(req);
@@ -47,13 +57,14 @@ router.post('/check-availability', async (req, res) => {
     return vapiResponse(res, toolCallId, 'Please provide the date and time you need the room for.');
   }
 
-  const needed   = parseInt(capacity_needed) || 2;
+  const needed   = parseInt(capacity_needed) || 1;
   const roomType = args.room_type || 'meeting';
-  const building = args.building  || null;
+  // Normalize building — fixes "tower a" vs "Tower A" mismatch
+  const building = normalizeBuilding(args.building);
 
   const available = [];
   for (const room of rooms) {
-    if (room.type !== roomType) continue;
+    if (room.type !== roomType)  continue;
     if (room.capacity < needed)  continue;
     if (!room.available)         continue;
     if (building && room.building !== building) continue;
@@ -62,16 +73,41 @@ router.post('/check-availability', async (req, res) => {
   }
 
   if (available.length === 0) {
+    // If building filter was applied and nothing found, try without it and suggest alternatives
+    const anyAvailable = [];
+    for (const room of rooms) {
+      if (room.type !== roomType) continue;
+      if (room.capacity < needed) continue;
+      if (!room.available)        continue;
+      if (await isRoomBooked(room.room_id, date, start_time)) continue;
+      anyAvailable.push(room);
+    }
+
+    if (anyAvailable.length > 0 && building) {
+      const alt = anyAvailable[0];
+      return vapiResponse(res, toolCallId,
+        `No ${roomType} rooms available in ${building} for ${needed} people on ${date} at ${start_time}. ` +
+        `However, I found ${anyAvailable.length} room(s) in other buildings. ` +
+        `Best option: ${alt.name} on Floor ${alt.floor}, ${alt.building}, capacity ${alt.capacity}. ` +
+        `Shall I book this instead?`
+      );
+    }
+
     return vapiResponse(res, toolCallId,
-      `Sorry, no ${roomType} rooms are available for ${needed} people on ${date} at ${start_time}. Would you like to try a different time?`
+      `No ${roomType} rooms are available for ${needed} people on ${date} at ${start_time}. ` +
+      `Please try a different time or date.`
     );
   }
 
   const best = available.sort((a, b) => a.capacity - b.capacity)[0];
+  const others = available.slice(1, 3).map(r => `${r.name} in ${r.building}`).join(', ');
+
   return vapiResponse(res, toolCallId,
-    `I found ${available.length} available room(s). ` +
+    `I found ${available.length} available ${roomType} room(s)${building ? ` in ${building}` : ''}. ` +
     `Best option: ${best.name} on Floor ${best.floor}, ${best.building}, capacity ${best.capacity}. ` +
-    `Amenities: ${best.amenities.join(', ')}. Shall I book this room for you?`
+    `Amenities: ${best.amenities.join(', ')}. ` +
+    (others ? `Other options: ${others}. ` : '') +
+    `Shall I book ${best.name} for you?`
   );
 });
 
@@ -87,13 +123,19 @@ router.post('/book-room', async (req, res) => {
     return vapiResponse(res, toolCallId, 'I need the room name, date, and time to complete the booking.');
   }
 
+  // Case-insensitive room name match
   const room = rooms.find(r => r.name.toLowerCase() === room_name.toLowerCase());
   if (!room) {
-    return vapiResponse(res, toolCallId, `I could not find a room named ${room_name}.`);
+    const roomNames = rooms.filter(r => r.type === 'meeting').map(r => r.name).join(', ');
+    return vapiResponse(res, toolCallId,
+      `I could not find a room named ${room_name}. Available rooms are: ${roomNames}.`
+    );
   }
 
   if (await isRoomBooked(room.room_id, date, start_time)) {
-    return vapiResponse(res, toolCallId, `Room ${room.name} is already booked at that time. Would you like to check other rooms?`);
+    return vapiResponse(res, toolCallId,
+      `Room ${room.name} is already booked at that time. Would you like me to check other available rooms?`
+    );
   }
 
   const duration = parseFloat(duration_hours) || 1;
@@ -123,8 +165,8 @@ router.post('/book-room', async (req, res) => {
 
   console.log(`🏢 Room booked: ${bookingId}`);
   return vapiResponse(res, toolCallId,
-    `${room.name} on Floor ${room.floor}, ${room.building} booked successfully. ` +
-    `Date: ${date}, Time: ${start_time} to ${endTime}. Booking ID: ${bookingId}.`
+    `Done! ${room.name} on Floor ${room.floor}, ${room.building} is booked. ` +
+    `Date: ${date}, Time: ${start_time} to ${endTime}. Your booking ID is ${bookingId}.`
   );
 });
 
@@ -137,12 +179,12 @@ router.post('/cancel-booking', async (req, res) => {
   const { booking_id } = args;
 
   if (!booking_id) {
-    return vapiResponse(res, toolCallId, 'Please provide your booking ID to cancel.');
+    return vapiResponse(res, toolCallId, 'Please provide your booking ID to cancel. It looks like JPMC-RM-2001.');
   }
 
   const booking = await RoomBooking.findOne({ booking_id: new RegExp(`^${booking_id}$`, 'i') });
   if (!booking) {
-    return vapiResponse(res, toolCallId, `I could not find booking ${booking_id}.`);
+    return vapiResponse(res, toolCallId, `I could not find booking ${booking_id}. Please check the ID.`);
   }
 
   if (employee && booking.employee_sid !== employee.sid) {
@@ -154,7 +196,7 @@ router.post('/cancel-booking', async (req, res) => {
   await booking.save();
 
   return vapiResponse(res, toolCallId,
-    `Booking ${booking_id} for Room ${booking.room_name} on ${booking.date} at ${booking.start_time} has been cancelled.`
+    `Booking ${booking_id} for ${booking.room_name} on ${booking.date} at ${booking.start_time} has been cancelled successfully.`
   );
 });
 
@@ -172,7 +214,10 @@ router.post('/my-bookings', async (req, res) => {
     return vapiResponse(res, toolCallId, 'You have no upcoming room bookings.');
   }
 
-  const summary = myBookings.map(b => `${b.booking_id}: ${b.room_name} on ${b.date} at ${b.start_time}`).join('. ');
+  const summary = myBookings.map(b =>
+    `${b.booking_id}: ${b.room_name} in ${b.building} on ${b.date} at ${b.start_time}`
+  ).join('. ');
+
   return vapiResponse(res, toolCallId, `You have ${myBookings.length} booking(s). ${summary}.`);
 });
 
