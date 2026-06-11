@@ -183,22 +183,37 @@ app.post('/call/outbound', async (req, res) => {
 
   if (!to) return res.status(400).json({ success: false, error: 'Phone number required' });
 
-  // Check if number is registered before placing call
   const employee = employees[to];
   if (!employee) {
     return res.status(403).json({ success: false, error: 'This number is not registered with JPMC.' });
   }
 
   try {
-    const call = await twilioClient.calls.create({
-      to,
-      from: process.env.TWILIO_PHONE_NUMBER,
-      // Point to your vAPI auth hook so auth still runs normally
-      url: `${process.env.SERVER_URL}/call/twiml?to=${encodeURIComponent(to)}`
+    // Use vAPI outbound call API directly — most reliable method
+    const response = await fetch('https://api.vapi.ai/call/phone', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.VAPI_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        assistantId: process.env.VAPI_ASSISTANT_ID,
+        assistantOverrides: {
+          firstMessage: `Hello ${employee.name}! I am Alex from JPMC. Your identity has been verified. How can I help you today?`
+        },
+        phoneNumberId: process.env.VAPI_PHONE_NUMBER_ID,
+        customer: { number: to }
+      })
     });
 
-    console.log(`📞 Outbound call initiated to ${to}: ${call.sid}`);
-    res.json({ success: true, call_sid: call.sid });
+    const data = await response.json();
+
+    if (data.id) {
+      console.log(`📞 vAPI outbound call to ${to}: ${data.id}`);
+      res.json({ success: true, call_id: data.id });
+    } else {
+      throw new Error(data.message || JSON.stringify(data));
+    }
   } catch (err) {
     console.error('Outbound call failed:', err.message);
     res.status(500).json({ success: false, error: err.message });
@@ -213,12 +228,9 @@ app.post('/call/twiml', (req, res) => {
 
   const twiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-  <Connect>
-    <Stream url="wss://api.vapi.ai/twilio">
-      <Parameter name="assistantId" value="${vapiAssistantId}"/>
-      <Parameter name="assistantOverrides" value='{"firstMessage":"Hello ${employee.name || 'there'}! I am Alex from JPMC. Your identity has been verified. How can I help you today?"}'/>
-    </Stream>
-  </Connect>
+  <Dial>
+    <SipUri>sip:${vapiAssistantId}@sip.vapi.ai;transport=tcp</SipUri>
+  </Dial>
 </Response>`;
 
   res.type('text/xml').send(twiml);
