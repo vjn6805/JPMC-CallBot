@@ -1,3 +1,6 @@
 node_modules/
 .env
 data/tickets.json
+data/food-orders.json
+data/shuttle-bookings.json
+data/bookings.json

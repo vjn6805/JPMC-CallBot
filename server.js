@@ -1,6 +1,26 @@
 require('dotenv').config();
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
 const app = express();
+
+// ─────────────────────────────────────────────
+// Auto-create data files if missing (needed on
+// fresh Render deploys since they are gitignored)
+// ─────────────────────────────────────────────
+const dataDefaults = {
+  'data/tickets.json':         JSON.stringify({ tickets: [], last_ticket_id: 1000 }, null, 2),
+  'data/food-orders.json':     JSON.stringify({ orders: [], last_order_id: 3000 }, null, 2),
+  'data/shuttle-bookings.json':JSON.stringify({ bookings: [], last_booking_id: 5000 }, null, 2),
+  'data/bookings.json':        JSON.stringify({ bookings: [], last_booking_id: 2000 }, null, 2)
+};
+for (const [filePath, defaultContent] of Object.entries(dataDefaults)) {
+  const fullPath = path.join(__dirname, filePath);
+  if (!fs.existsSync(fullPath)) {
+    fs.writeFileSync(fullPath, defaultContent);
+    console.log(`📁 Created missing data file: ${filePath}`);
+  }
+}
 
 
 
