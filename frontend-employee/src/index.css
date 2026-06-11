@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg:          #f4efe7; /* Warm linen/cream background */
+  --bg-2:        #FFFFFF; /* Crisp white cards and panels */
+  --bg-3:        #eae3d5; /* Soft warm grey for table headers / inputs */
+  --border:      #e5decb; /* Soft warm border */
+  --border-2:    #cbbfab; /* Secondary warm border */
+  --text:        #2E1E14; /* Deep espresso/charcoal for extreme readability */
+  --text-2:      #5C4538; /* Medium warm brown */
+  --text-3:      #917A6A; /* Muted warm brown */
+  
+  /* JPMC Specific Brand Colors */
+  --jpm-navy:    #8f5a39; /* Warm bronze/terracotta */
+  --jpm-gold:    #b07955; /* Lighter warm bronze */
+  
+  --blue:        #8f5a39;
+  --blue-dim:    rgba(143, 90, 57, 0.06);
+  --green:       #1B4D3E;
+  --green-dim:   rgba(27, 77, 62, 0.06);
+  --yellow:      #8c773e;
+  --yellow-dim:  rgba(140, 119, 62, 0.06);
+  --red:         #9E2A2B;
+  --red-dim:     rgba(158, 42, 43, 0.06);
+  --purple:      #785B43;
+  --purple-dim:  rgba(120, 91, 67, 0.06);
+
+  
+  --font:        'Plus Jakarta Sans', sans-serif;
+  --font-serif:  'Cormorant Garamond', serif;
+  --mono:        'JetBrains Mono', monospace;
+}
+
+html, body, #root { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+button { font-family: var(--font); cursor: pointer; }
+input  { font-family: var(--font); }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
+

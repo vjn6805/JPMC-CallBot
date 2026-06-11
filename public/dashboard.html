@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JPMC Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:          #f4efe7; /* Warm linen/cream background */
+      --surface:     #FFFFFF; /* Card background */
+      --border:      #e5decb; /* Soft warm border */
+      --border-2:    #cbbfab; /* Secondary warm border */
+      --text:        #2E1E14; /* Deep espresso text */
+      --muted:       #917A6A; /* Muted warm brown */
+      
+      /* JP Morgan Specific Brand Colors */
+      --jpm-navy:    #8f5a39; /* Warm bronze/terracotta */
+      --jpm-gold:    #b07955; /* Lighter warm bronze */
+      
+      --blue:        #8f5a39;
+      --blue-lt:     #6d4123;
+      --green:       #1B4D3E;
+      --orange:      #8c773e;
+      --red:         #9E2A2B;
+      --yellow:      #8c773e;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── LOGIN ── */
+    #login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--jpm-navy) 0%, #112542 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #login-screen::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(circle at 10% 20%, rgba(161, 138, 79, 0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .login-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 48px 44px;
+      width: 380px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .login-card .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: var(--jpm-gold);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .login-card h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--jpm-navy);
+      margin-bottom: 8px;
+    }
+
+    .login-card p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 32px;
+      font-weight: 500;
+    }
+
+    .login-card input {
+      width: 100%;
+      padding: 13px 16px;
+      border-radius: 6px;
+      border: 1px solid var(--border-2);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      margin-bottom: 16px;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .login-card input:focus {
+      border-color: var(--jpm-navy);
+      box-shadow: 0 0 0 3px rgba(143, 90, 57, 0.1);
+      background: #FFFFFF;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 13px;
+      border-radius: 6px;
+      border: none;
+      background: var(--jpm-navy);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(143, 90, 57, 0.15);
+    }
+
+    .btn-primary:hover {
+      background: #6d4123;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(143, 90, 57, 0.25);
+    }
+
+    .login-err {
+      font-size: 13px;
+      color: var(--red);
+      margin-top: 16px;
+      min-height: 18px;
+      font-weight: 500;
+    }
+
+    /* ── DASHBOARD ── */
+    #dashboard { display: none; flex-direction: column; min-height: 100vh; }
+
+    /* Topbar */
+    .topbar {
+      background: var(--jpm-navy);
+      border-bottom: 2px solid var(--jpm-gold);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(143, 90, 57, 0.08);
+    }
+
+    .topbar-left { display: flex; align-items: center; gap: 14px; }
+    
+    .topbar-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #FFFFFF;
+    }
+
+    .topbar-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.9);
+      letter-spacing: 0.5px;
+    }
+
+    .topbar-sep {
+      width: 1px;
+      height: 18px;
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .topbar-right { display: flex; align-items: center; gap: 16px; }
+
+    .admin-badge {
+      font-size: 12px;
+      font-weight: 600;
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .logout-btn {
+      padding: 6px 14px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.04);
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .logout-btn:hover {
+      color: #FFFFFF;
+      border-color: var(--jpm-gold);
+      background: rgba(161, 138, 79, 0.15);
+    }
+
+    /* Main layout */
+    .main { display: flex; flex: 1; }
+
+    /* Sidebar */
+    .sidebar {
+      width: 220px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 24px 0;
+      flex-shrink: 0;
+      box-shadow: 2px 0 10px rgba(143, 90, 57, 0.01);
+    }
+
+    .sidebar-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      text-transform: uppercase;
+      padding: 0 20px;
+      margin-bottom: 12px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .nav-item:hover {
+      color: var(--jpm-navy);
+      background: rgba(143, 90, 57, 0.05);
+    }
+
+    .nav-item.active {
+      color: var(--jpm-navy);
+      border-left-color: var(--jpm-gold);
+      background: rgba(143, 90, 57, 0.05);
+      font-weight: 600;
+    }
+
+    .nav-icon { font-size: 16px; }
+
+    .nav-count {
+      margin-left: auto;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--mono);
+      padding: 2px 8px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      min-width: 32px;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .nav-item.active .nav-count {
+      background: var(--jpm-gold);
+      color: #FFFFFF;
+      border-color: transparent;
+    }
+
+    /* Content */
+    .content { flex: 1; padding: 28px 32px; overflow-y: auto; }
+
+    /* Summary cards */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .summary-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(143, 90, 57, 0.02), 0 1px 2px rgba(143, 90, 57, 0.01);
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .summary-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: var(--border-2);
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+
+    .summary-card:nth-child(1)::before { background: var(--jpm-gold); }
+    .summary-card:nth-child(2)::before { background: var(--blue); }
+    .summary-card:nth-child(3)::before { background: var(--purple, #4A3B6B); }
+    .summary-card:nth-child(4)::before { background: var(--green); }
+
+    .summary-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(143, 90, 57, 0.05);
+    }
+
+    .sc-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .sc-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--jpm-navy);
+      line-height: 1;
+    }
+
+    .sc-sub {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    /* Tab panels */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    
+    .panel-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--jpm-navy);
+    }
+
+    .refresh-btn {
+      padding: 6px 12px;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 1px 2px rgba(143, 90, 57, 0.02);
+    }
+
+    .refresh-btn:hover {
+      color: var(--jpm-navy);
+      border-color: var(--border-2);
+      background: var(--bg);
+    }
+
+    /* Table */
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(143, 90, 57, 0.02);
+    }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead tr { background: #E9EDF2; }
+
+    th {
+      padding: 14px 18px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      vertical-align: middle;
+    }
+
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: var(--bg); }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-open             { background: rgba(140, 119, 62, 0.06);  color: #8C773E; border: 1px solid rgba(140, 119, 62, 0.15); }
+    .badge-confirmed        { background: rgba(27, 77, 62, 0.06);  color: #1B4D3E; border: 1px solid rgba(27, 77, 62, 0.15); }
+    .badge-cancelled        { background: rgba(158, 42, 43, 0.06);  color: #9E2A2B; border: 1px solid rgba(158, 42, 43, 0.15); }
+    .badge-pending          { background: rgba(143, 90, 57, 0.06); color: #8f5a39; border: 1px solid rgba(143, 90, 57, 0.15); }
+    .badge-resolved         { background: rgba(27, 77, 62, 0.06);  color: #1B4D3E; border: 1px solid rgba(27, 77, 62, 0.15); }
+
+    .empty-row td { text-align: center; color: var(--muted); padding: 40px; font-size: 14px; font-weight: 500; }
+
+    /* Loading spinner */
+    .spinner {
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 2px solid var(--border-2);
+      border-top-color: var(--jpm-navy);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-row td { text-align: center; color: var(--muted); padding: 40px; font-weight: 500; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .summary-grid { grid-template-columns: 1fr 1fr; }
+      .sidebar { width: 56px; }
+      .sidebar .nav-item span:not(.nav-icon) { display: none; }
+      .sidebar .sidebar-label { display: none; }
+      .nav-count { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── LOGIN SCREEN ── -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="logo">JPMorgan Chase</div>
+    <h2>Admin Portal</h2>
+    <p>Sign in to access the operations dashboard</p>
+    <input type="text"     id="usr" placeholder="Username" autocomplete="off" />
+    <input type="password" id="pwd" placeholder="Password" />
+    <button class="btn-primary" onclick="login()">Sign In</button>
+    <p class="login-err" id="login-err"></p>
+  </div>
+</div>
+
+<!-- ── DASHBOARD ── -->
+<div id="dashboard">
+  <div class="topbar">
+    <div class="topbar-left">
+      <span class="topbar-logo">JPMorgan Chase</span>
+      <div class="topbar-sep"></div>
+      <span class="topbar-title">Operations Dashboard</span>
+    </div>
+    <div class="topbar-right">
+      <span class="admin-badge">👤 Admin</span>
+      <button class="logout-btn" onclick="logout()">Sign Out</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="sidebar-label">Menu</div>
+      <div class="nav-item active" onclick="switchTab('tickets')"    id="nav-tickets">
+        <span class="nav-icon">🎫</span><span>IT Tickets</span>
+        <span class="nav-count" id="cnt-tickets">—</span>
+      </div>
+      <div class="nav-item" onclick="switchTab('rooms')"      id="nav-rooms">
+        <span class="nav-icon">🏢</span><span>Room Bookings</span>
+        <span class="nav-count" id="cnt-rooms">—</span>
+      </div>
+      <div class="nav-item" onclick="switchTab('food')"       id="nav-food">
+        <span class="nav-icon">🍽️</span><span>Food Orders</span>
+        <span class="nav-count" id="cnt-food">—</span>
+      </div>
+      <div class="nav-item" onclick="switchTab('shuttle')"    id="nav-shuttle">
+        <span class="nav-icon">🚌</span><span>Shuttle Bookings</span>
+        <span class="nav-count" id="cnt-shuttle">—</span>
+      </div>
+    </nav>
+
+    <!-- Content -->
+    <div class="content">
+
+      <!-- Summary Cards -->
+      <div class="summary-grid">
+        <div class="summary-card">
+          <span class="sc-label">Open Tickets</span>
+          <span class="sc-value" id="sum-tickets">—</span>
+          <span class="sc-sub">Awaiting resolution</span>
+        </div>
+        <div class="summary-card">
+          <span class="sc-label">Room Bookings</span>
+          <span class="sc-value" id="sum-rooms">—</span>
+          <span class="sc-sub">Active confirmed</span>
+        </div>
+        <div class="summary-card">
+          <span class="sc-label">Food Orders</span>
+          <span class="sc-value" id="sum-food">—</span>
+          <span class="sc-sub">Pending payment</span>
+        </div>
+        <div class="summary-card">
+          <span class="sc-label">Shuttle Bookings</span>
+          <span class="sc-value" id="sum-shuttle">—</span>
+          <span class="sc-sub">Confirmed seats</span>
+        </div>
+      </div>
+
+      <!-- IT Tickets Tab -->
+      <div class="tab-panel active" id="panel-tickets">
+        <div class="panel-header">
+          <span class="panel-title">IT Tickets</span>
+          <button class="refresh-btn" onclick="loadTickets()">↻ Refresh</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Ticket ID</th>
+                <th>Employee</th>
+                <th>Department</th>
+                <th>Category</th>
+                <th>Assigned To</th>
+                <th>SLA</th>
+                <th>Status</th>
+                <th>Raised At</th>
+              </tr>
+            </thead>
+            <tbody id="tb-tickets"><tr class="loading-row"><td colspan="8"><span class="spinner"></span>Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Room Bookings Tab -->
+      <div class="tab-panel" id="panel-rooms">
+        <div class="panel-header">
+          <span class="panel-title">Room Bookings</span>
+          <button class="refresh-btn" onclick="loadRooms()">↻ Refresh</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Booking ID</th>
+                <th>Employee</th>
+                <th>Room</th>
+                <th>Type</th>
+                <th>Location</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="tb-rooms"><tr class="loading-row"><td colspan="8"><span class="spinner"></span>Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Food Orders Tab -->
+      <div class="tab-panel" id="panel-food">
+        <div class="panel-header">
+          <span class="panel-title">Food Orders</span>
+          <button class="refresh-btn" onclick="loadFood()">↻ Refresh</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Employee</th>
+                <th>Outlet</th>
+                <th>Location</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Ordered At</th>
+              </tr>
+            </thead>
+            <tbody id="tb-food"><tr class="loading-row"><td colspan="8"><span class="spinner"></span>Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Shuttle Bookings Tab -->
+      <div class="tab-panel" id="panel-shuttle">
+        <div class="panel-header">
+          <span class="panel-title">Shuttle Bookings</span>
+          <button class="refresh-btn" onclick="loadShuttle()">↻ Refresh</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Booking ID</th>
+                <th>Employee</th>
+                <th>Route</th>
+                <th>Travel Date</th>
+                <th>Departure</th>
+                <th>Pickup Point</th>
+                <th>Status</th>
+                <th>Booked At</th>
+              </tr>
+            </thead>
+            <tbody id="tb-shuttle"><tr class="loading-row"><td colspan="8"><span class="spinner"></span>Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /dashboard -->
+
+<script>
+  // ── Auth ──────────────────────────────────────
+  const ADMIN_USER = 'admin';
+  const ADMIN_PASS = 'jpmc@2025';
+
+  function login() {
+    const u = document.getElementById('usr').value.trim();
+    const p = document.getElementById('pwd').value;
+    if (u === ADMIN_USER && p === ADMIN_PASS) {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('dashboard').style.display    = 'flex';
+      loadAll();
+    } else {
+      document.getElementById('login-err').textContent = 'Invalid username or password.';
+    }
+  }
+
+  function logout() {
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('dashboard').style.display    = 'none';
+    document.getElementById('usr').value = '';
+    document.getElementById('pwd').value = '';
+  }
+
+  // Allow Enter key on password field
+  document.getElementById('pwd').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+
+  // ── Tab switching ─────────────────────────────
+  const TABS = ['tickets', 'rooms', 'food', 'shuttle'];
+
+  function switchTab(name) {
+    TABS.forEach(t => {
+      document.getElementById(`panel-${t}`).classList.toggle('active', t === name);
+      document.getElementById(`nav-${t}`).classList.toggle('active', t === name);
+    });
+  }
+
+  // ── Helpers ───────────────────────────────────
+  function fmt(dateStr) {
+    if (!dateStr) return '—';
+    const d = new Date(dateStr);
+    return d.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  }
+
+  function badge(status) {
+    const map = {
+      OPEN:            'badge-open',
+      CONFIRMED:       'badge-confirmed',
+      CANCELLED:       'badge-cancelled',
+      PENDING_PAYMENT: 'badge-pending',
+      RESOLVED:        'badge-resolved',
+    };
+    const cls = map[status] || 'badge-pending';
+    const label = status?.replace('_', ' ') || '—';
+    return `<span class="badge ${cls}">${label}</span>`;
+  }
+
+  function emptyRow(cols, msg = 'No records found') {
+    return `<tr class="empty-row"><td colspan="${cols}">${msg}</td></tr>`;
+  }
+
+  // ── Load all data ─────────────────────────────
+  function loadAll() {
+    loadSummary();
+    loadTickets();
+    loadRooms();
+    loadFood();
+    loadShuttle();
+  }
+
+  async function loadSummary() {
+    try {
+      const d = await fetch('/api/summary').then(r => r.json());
+      document.getElementById('sum-tickets').textContent = d.open_tickets        ?? '—';
+      document.getElementById('sum-rooms').textContent   = d.active_room_bookings ?? '—';
+      document.getElementById('sum-food').textContent    = d.pending_food_orders  ?? '—';
+      document.getElementById('sum-shuttle').textContent = d.shuttle_bookings     ?? '—';
+    } catch { /* silent */ }
+  }
+
+  // ── IT Tickets ────────────────────────────────
+  async function loadTickets() {
+    const tb = document.getElementById('tb-tickets');
+    tb.innerHTML = `<tr class="loading-row"><td colspan="8"><span class="spinner"></span>Loading...</td></tr>`;
+    try {
+      const data = await fetch('/api/tickets').then(r => r.json());
+      document.getElementById('cnt-tickets').textContent = data.length || '0';
+      if (!data.length) { tb.innerHTML = emptyRow(8); return; }
+      tb.innerHTML = data.map(t => `
+        <tr>
+          <td><code style="font-size:12px;color:#60a5fa">${t.ticket_id}</code></td>
+          <td>${t.employee_name}<br/><span style="font-size:11px;color:var(--muted)">${t.employee_sid}</span></td>
+          <td>${t.department || '—'}</td>
+          <td>${t.category || '—'}</td>
+          <td>${t.assigned_team || '—'}</td>
+          <td>${t.sla_hours ? t.sla_hours + 'h' : '—'}</td>
+          <td>${badge(t.status)}</td>
+          <td style="font-size:12px">${fmt(t.raised_at)}</td>
+        </tr>`).join('');
+    } catch {
+      tb.innerHTML = emptyRow(8, '⚠️ Failed to load tickets');
+    }
+  }
+
+  // ── Room Bookings ─────────────────────────────
+  async function loadRooms() {
+    const tb = document.getElementById('tb-rooms');
+    tb.innerHTML = `<tr class="loading-row"><td colspan="8"><span class="spinner"></span>Loading...</td></tr>`;
+    try {
+      const data = await fetch('/api/room-bookings').then(r => r.json());
+      document.getElementById('cnt-rooms').textContent = data.length || '0';
+      if (!data.length) { tb.innerHTML = emptyRow(8); return; }
+      tb.innerHTML = data.map(b => `
+        <tr>
+          <td><code style="font-size:12px;color:#60a5fa">${b.booking_id}</code></td>
+          <td>${b.employee_name}<br/><span style="font-size:11px;color:var(--muted)">${b.employee_sid}</span></td>
+          <td>${b.room_name || '—'}</td>
+          <td style="text-transform:capitalize">${b.room_type || '—'}</td>
+          <td>Floor ${b.floor}, ${b.building}</td>
+          <td>${b.date || '—'}</td>
+          <td>${b.start_time || '—'} – ${b.end_time || '—'}</td>
+          <td>${badge(b.status)}</td>
+        </tr>`).join('');
+    } catch {
+      tb.innerHTML = emptyRow(8, '⚠️ Failed to load room bookings');
+    }
+  }
+
+  // ── Food Orders ───────────────────────────────
+  async function loadFood() {
+    const tb = document.getElementById('tb-food');
+    tb.innerHTML = `<tr class="loading-row"><td colspan="8"><span class="spinner"></span>Loading...</td></tr>`;
+    try {
+      const data = await fetch('/api/food-orders').then(r => r.json());
+      document.getElementById('cnt-food').textContent = data.length || '0';
+      if (!data.length) { tb.innerHTML = emptyRow(8); return; }
+      tb.innerHTML = data.map(o => `
+        <tr>
+          <td><code style="font-size:12px;color:#60a5fa">${o.order_id}</code></td>
+          <td>${o.employee_name}<br/><span style="font-size:11px;color:var(--muted)">${o.employee_sid}</span></td>
+          <td>${o.outlet_name || '—'}</td>
+          <td>Floor ${o.floor}, ${o.building}</td>
+          <td style="font-size:12px;max-width:180px">${(o.items || []).map(i => i.name).join(', ') || '—'}</td>
+          <td>₹${o.total_amount || 0}</td>
+          <td>${badge(o.status)}</td>
+          <td style="font-size:12px">${fmt(o.ordered_at)}</td>
+        </tr>`).join('');
+    } catch {
+      tb.innerHTML = emptyRow(8, '⚠️ Failed to load food orders');
+    }
+  }
+
+  // ── Shuttle Bookings ──────────────────────────
+  async function loadShuttle() {
+    const tb = document.getElementById('tb-shuttle');
+    tb.innerHTML = `<tr class="loading-row"><td colspan="8"><span class="spinner"></span>Loading...</td></tr>`;
+    try {
+      const data = await fetch('/api/shuttle-bookings').then(r => r.json());
+      document.getElementById('cnt-shuttle').textContent = data.length || '0';
+      if (!data.length) { tb.innerHTML = emptyRow(8); return; }
+      tb.innerHTML = data.map(b => `
+        <tr>
+          <td><code style="font-size:12px;color:#60a5fa">${b.booking_id}</code></td>
+          <td>${b.employee_name}<br/><span style="font-size:11px;color:var(--muted)">${b.employee_sid}</span></td>
+          <td>${b.route_name || '—'}</td>
+          <td>${b.travel_date || '—'}</td>
+          <td>${b.departure_time || '—'}</td>
+          <td>${b.pickup_point || '—'}</td>
+          <td>${badge(b.status)}</td>
+          <td style="font-size:12px">${fmt(b.booked_at)}</td>
+        </tr>`).join('');
+    } catch {
+      tb.innerHTML = emptyRow(8, '⚠️ Failed to load shuttle bookings');
+    }
+  }
+</script>
+</body>
+</html>
