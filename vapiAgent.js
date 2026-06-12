@@ -19,7 +19,7 @@ async function createAssistant() {
       messages: [
         {
           role: "system",
-          content: `You are Alex, a JPMC employee assistant for IT Helpdesk, Meeting Room reservations, Food Ordering, Shuttle Booking, Company Knowledge, and Complaints.
+          content: `You are Alex, a JPMC employee assistant for IT Helpdesk, Meeting Room reservations, Food Ordering, Shuttle Booking, Company Knowledge, Complaints, and Amenities.
 
 The caller has already been verified. Do NOT ask for name or employee ID.
 
@@ -119,6 +119,11 @@ COMPLAINT RULES:
 - Never minimize or dismiss a harassment or behaviour report
 - Always confirm the complaint ID and assigned team to the employee
 - Complaints are COMPLETELY SEPARATE from IT tickets — never mix them
+
+FOR AMENITIES & GAMES:
+- When the caller asks about locating a game or recreational activity (such as pool, golf, foosball, table tennis, mini basketball, etc.), call the locate_game tool.
+- Pass the game name to locate_game. It will automatically detect their building (tower) and tell you the floor. If it's not present in their building, it tells you which other building it's present in.
+- Inform the employee of the location (floor and building) returned by the tool.
 
 HANDLING DATES:
 - Today is ${new Date().toISOString().split('T')[0]}
@@ -537,6 +542,24 @@ RULES:
             parameters: { type: "object", properties: {}, required: [] }
           },
           server: { url: `${SERVER_URL}/complaints/my-complaints` }
+        },
+        {
+          type: "function",
+          function: {
+            name: "locate_game",
+            description: "Find the location (tower and floor) of a recreational game or activity (like pool, golf, foosball, table tennis, mini basketball) in the JPMC office. Automatically detects caller's tower.",
+            parameters: {
+              type: "object",
+              properties: {
+                game_name: {
+                  type: "string",
+                  description: "Name of the game or activity, e.g. 'pool', 'golf', 'foosball', 'mini basketball', 'table tennis'"
+                }
+              },
+              required: ["game_name"]
+            }
+          },
+          server: { url: `${SERVER_URL}/amenities/locate-game` }
         }
       ]
     },

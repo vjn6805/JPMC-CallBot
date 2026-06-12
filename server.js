@@ -130,6 +130,9 @@ app.use('/shuttle', shuttleRoutes);
 const complaintsRoutes = require('./routes/complaints');
 app.use('/complaints', complaintsRoutes);
 
+const amenitiesRoutes = require('./routes/amenities');
+app.use('/amenities', amenitiesRoutes);
+
 // ─────────────────────────────────────────────
 // ROUTE 1: Twilio incoming call
 // Phase 1 auth + hand off to vAPI

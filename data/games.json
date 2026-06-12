@@ -1,0 +1,48 @@
+{
+  "games": [
+    {
+      "id": "pool",
+      "name": "Pool Table",
+      "aliases": ["pool", "snooker", "billiards", "pool table"],
+      "locations": [
+        { "building": "Tower A", "floor": 4 },
+        { "building": "Tower B", "floor": 3 }
+      ]
+    },
+    {
+      "id": "golf",
+      "name": "Golf Simulator",
+      "aliases": ["golf", "mini golf", "putting green", "golf simulator"],
+      "locations": [
+        { "building": "Tower B", "floor": 5 }
+      ]
+    },
+    {
+      "id": "foosball",
+      "name": "Foosball Table",
+      "aliases": ["foosball", "fosball", "table soccer", "foosball table"],
+      "locations": [
+        { "building": "Tower A", "floor": 2 },
+        { "building": "Tower C", "floor": 4 }
+      ]
+    },
+    {
+      "id": "mini_basketball",
+      "name": "Mini Basketball",
+      "aliases": ["mini basketball", "basketball", "hoop", "mini basketball hoop"],
+      "locations": [
+        { "building": "Tower C", "floor": 1 }
+      ]
+    },
+    {
+      "id": "table_tennis",
+      "name": "Table Tennis",
+      "aliases": ["table tennis", "tt", "ping pong", "table tennis court"],
+      "locations": [
+        { "building": "Tower A", "floor": 4 },
+        { "building": "Tower B", "floor": 2 },
+        { "building": "Tower C", "floor": 3 }
+      ]
+    }
+  ]
+}

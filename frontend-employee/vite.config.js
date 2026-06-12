@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     port: 5174,
     proxy: {
-      '/employee': 'http://localhost:3001'
+      '/employee': 'http://localhost:3000'
     }
   }
 })
