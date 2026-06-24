@@ -14,7 +14,7 @@
       "name": "Golf Simulator",
       "aliases": ["golf", "mini golf", "putting green", "golf simulator"],
       "locations": [
-        { "building": "Tower B", "floor": 5 }
+        { "building": "Tower D", "floor": 10 }
       ]
     },
     {
