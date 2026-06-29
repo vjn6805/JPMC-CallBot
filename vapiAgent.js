@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ override: true });
 
 const VAPI_API_KEY = process.env.VAPI_API_KEY;
 const SERVER_URL = process.env.SERVER_URL;

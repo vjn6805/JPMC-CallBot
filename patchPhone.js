@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 async function patchPhoneNumber() {
-  const phoneNumberId = '11b735e1-dcb5-4462-a07f-3d67325d4f7e';
+  const phoneNumberId = '20ff382a-13e4-4a66-b33b-084b7b4734a1';
   const apiKey = process.env.VAPI_API_KEY;
   const serverUrl = process.env.SERVER_URL;
 
